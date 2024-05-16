@@ -1,6 +1,8 @@
 module Feynman
 export greet
- include("functions.jl")
+
+ include("Functions.jl")
+ include("DataTypes.jl")
 # Write your package code here.
 
 end
