@@ -13,6 +13,9 @@ export removeVariable
 export removeParameter
 export feynmanDenominators
 export propagators
+export ISP
+export removeElimVars
+export computeBaikovMatrix
 
  include("Functions.jl")
  include("DataTypes.jl")
