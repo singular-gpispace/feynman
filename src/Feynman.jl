@@ -16,7 +16,8 @@ export propagators
 export ISP
 export removeElimVars
 export computeBaikovMatrix
-
+export makePoly
+export removeVariableLocal
  include("Functions.jl")
  include("DataTypes.jl")
 # Write your package code here.
