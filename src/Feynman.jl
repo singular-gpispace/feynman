@@ -1,3 +1,8 @@
+@doc raw"""
+    Feynman is a package for computing integration-by-part identities (IBPs) of a Feynman Integral associated to Feynman graph using module intesecation method. 
+    This package also provides an interface of Oscar to use the packages NeatIBP developed using Singular and GPI-Space. 
+
+"""
 module Feynman
 using Oscar
 
