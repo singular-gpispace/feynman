@@ -3,7 +3,7 @@
 We assume that Julia is installed in a recent enough version to run OSCAR. Navigate in a terminal to the folder where you want to install the package and pull the package from Github:
 
 ```bash
-git pull https://github.com/singular-gpispace/feynman.git
+git pull https://github.com/singular-gpispace/Feynman.git
 ```
 
 In the same folder execute the following command:
