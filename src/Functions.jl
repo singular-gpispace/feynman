@@ -262,6 +262,7 @@ function eliminateVariables(G::labeledgraph)
   n=ngens(I);
   #Need ring homomorphism from R to RP to get ideal 
   H=hom(R,RP,gens(RP));
+  T=hom(RP,R,gens(R));
   v=[];
   for i in 1:n
     push!(v,H(I[i])); 
@@ -286,11 +287,12 @@ function eliminateVariables(G::labeledgraph)
   end
 
 #--------------------------------------
-#o=deglex(para)*deglex(var);
+#od=invlex(var)*invlex(para);
 #od=lex(para,var);
 od=invlex(RP);
 #--------------------------------------
   I=standard_basis(I,ordering=od,complete_reduction=true);
+#  I=standard_basis(I,ordering=od);
   #G1=G;
   eliminatedVariables=Vector{typeof(RP(1))}(undef,0);
   G.elimvar=Vector{typeof(RP(1))}(undef,0);
@@ -298,10 +300,10 @@ od=invlex(RP);
   for i in 1:n
     ld=leading_term(I[i],ordering=od);
     ta=ld-I[i];
-    ld=RP(ld);
+    #ld=RP(ld);
 
     if length(G.elimvar)==0
-        push!(G.elimvar,ld);
+        push!(G.elimvar,H(T(ld)));
     else
         k=0;
         for j in 1:length(G.elimvar)
@@ -312,12 +314,14 @@ od=invlex(RP);
             
         end
         if k==0
-            push!(G.elimvar,ld);            
+            push!(G.elimvar,H(T(ld)));            
         end
         
     end
-    ta=RP(ta); 
+    #ta=RP(ta); 
     G=substituteGraph(G,ld,ta);  
+    ld=0;
+    ta=0;
   end  
   #G.elimvar=Vector{typeof(RP(1))}(undef,0);
   #G.elimvar=eliminatedVariables;
@@ -581,20 +585,89 @@ function propagators(G::labeledgraph)
     H=hom(S,RP,gens(RP));
 #Ideal I an an Ideal of RP
   v=[];
+  u=[];
   for i in 1:ngens(J)
-    push!(v,H(J[i])); 
+    push!(v,H(J[i]));
+    push!(u,H(J[i])); 
   end
   J=ideal(RP,v);
 
 #Ideal J as an ideal of RP
   v=[];
+  
   for i in 1:ngens(infedges)
     push!(v,H(infedges[i])); 
   end
   infedges=ideal(RP,v);
 
+#=-------------------------------------------
+Code chunk for required sorting of generators in ideal in order to align with the example on the paper
+=#
+#=
+npars=0;
+    p=gens(base_ring(S));
+    para=[];
+    
+    for i in 1:length(p) 
+    
+        if p[i] in inverted_set(S)
+            continue;
+        else
+            push!(para,p[i]); 
+            npars=npars+1;
+        end
+          
+    end
+    startvars=npars+1;
+    varRP=gens(RP);
+#-----------------------------------
+b=Vector{typeof(RP(1))}(undef,0);
+c=Vector{typeof(RP(1))}(undef,0);
+for i in 1:length(varRP) 
+    if i>=startvars
+        push!(b,gens(RP)[i]);
+    else
+        push!(c,gens(RP)[i]);
+    end
+
+end
+
+
+    o=invlex(b)*lex(c);
+    w=Vector{typeof(RP(1))}(undef,0);
+    while length(u)!=0 
+        k=1;
+        
+
+        for j in 2:length(u) 
+            f=u[k];
+            f1=leading_monomial(f,ordering=o);
+            g=leading_monomial(u[j],ordering=o);
+                    if cmp(o,f1,g)==-1 || cmp(o,f1,g)==0  
+                        continue;
+                    else
+                        k=j;
+                    
+                        
+                    end
+            
+        end
+            push!(w,u[k]);
+            deleteat!(u,[k]);       
+    end
+    w
+    b=w[6];
+    w[6]=w[4];
+    w[4]=w[5];
+    w[5]=b;
+    J=ideal(RP,w);
+
+#-------------------------------------------=#
+  #=
+Code chunk ended
+=#
 #reduce J w.r.t std basis of infedges
-SB_infedges=standard_basis(infedges,ordering=lex(RP));
+SB_infedges=standard_basis(infedges,ordering=invlex(RP));
 
 N=Vector{typeof(RP(1))}(undef,0);
 for i in 1:ngens(J)
@@ -606,7 +679,7 @@ for i in 1:length(SB_infedges)
     push!(M,RP(SB_infedges[i]));     
 end
 
-N=reduce(N,M,ordering=lex(RP),complete_reduction=true);
+N=reduce(N,M,ordering=invlex(RP),complete_reduction=true);
 
 #rewite the ideal J as an ideal of S
 T=hom(RP,S,gens(S));
@@ -681,7 +754,7 @@ function ISP(G::labeledgraph)
     J=J+ideal(RP,el[i]);    
     end
     
-    J=groebner_basis(J,ordering=lex(RP),complete_reduction=true);
+    J=groebner_basis(J,ordering=invlex(RP));
 
     v=Vector{typeof(RP(1))}(undef,0);
     for i in 1:length(J)
@@ -692,12 +765,12 @@ function ISP(G::labeledgraph)
     w=Vector{typeof(RP(1))}(undef,0);   
     gens_RP=gens(RP);
     for i in 1:length(gens_RP) 
-        Q,h=reduce_with_quotients(gens_RP[i]^2,v,ordering=lex(RP),complete_reduction=true);
+        Q,h=reduce_with_quotients(gens_RP[i]^2,v,ordering=invlex(RP),complete_reduction=true);
         if h!=0
             push!(w,h);
         end
         for j in i+1:length(gens_RP) 
-        Q,h=reduce_with_quotients(gens_RP[i]*gens_RP[j],v,ordering=lex(RP),complete_reduction=true);
+        Q,h=reduce_with_quotients(gens_RP[i]*gens_RP[j],v,ordering=invlex(RP),complete_reduction=true);
         if h!=0
             push!(w,h);
         end
@@ -705,7 +778,7 @@ function ISP(G::labeledgraph)
     end
     
     K=ideal(RP,w);
-    K=standard_basis(K,ordering=lex(RP),complete_reduction=true);
+    K=standard_basis(K,ordering=invlex(RP),complete_reduction=true);
     H=hom(RP,S,gens(S));
     u=Vector{typeof(S(1))}(undef,0);
     for i in 1:length(K) 
@@ -805,8 +878,8 @@ function removeElimVars(G::labeledgraph)
     end
     T=hom(R,R1,u);
     u=Vector{typeof(R1(1))}(undef,0);
-    for i in 1:length(G.labels) 
-      push!(u,T(G.labels[i]));
+    for i in 1:length(lb) 
+      push!(u,T(lb[i]));
     end
     G.labels=u;
     G.over=R1;
@@ -850,19 +923,35 @@ function computeBaikovMatrix(G)
         
     end
     
-   # if typeof(G)!="labeledgraph"
-    #    throw(error("expected a graph or labeledgraph"));
+    #if typeof(G)!="labeledgraph"
+    ##    throw(error("expected a graph or labeledgraph"));
     # end
 
     R=G.over;
     RP=G.overpoly;
     P=Feynman.propagators(G);
-
+    ngens(P)
     I=Feynman.ISP(G);
     PI=P+I;
     idx=0;
-
-    #calculate number of parameters
+#-------------------------------------------------------------
+    H=hom(R,RP,gens(RP));
+    T=hom(RP,R,gens(R));
+#--------------------------------------------------------------
+    a=Vector{typeof(RP(1))}(undef,0);
+    for i in 1:ngens(P) 
+        push!(a,H(P[i]));
+    end
+    P=ideal(RP,a);
+    v=Vector{typeof(RP(1))}(undef,0);
+   
+    for i in 1:ngens(P) 
+        push!(v,P[i]);
+       
+    end
+    
+    
+#-------------------------------------ordering elements
     npars=0;
     p=gens(base_ring(R));
     para=[];
@@ -879,11 +968,12 @@ function computeBaikovMatrix(G)
     end
     startvars=npars+1;
     varRP=gens(RP);
+    #-----------------------------------------
 
     gram1=Vector{typeof(varRP[1])}(undef,0);
 
-    H=hom(R,RP,gens(RP));
-
+    #H=hom(R,RP,gens(RP));
+    idx=0;
     for i in 1:length(varRP)
         for j in 1:length(varRP) 
         if (i>=startvars) || (j>=startvars)
@@ -895,27 +985,41 @@ function computeBaikovMatrix(G)
         end
     
     end
+    #gram1
 
+#-----print gram vector as a matrix
+    W=Matrix{typeof(RP(1))}(undef,ngens(RP),ngens(RP));    
+    for j in 1:length(gram1)
+            i=div(j,ngens(RP))+1;
+            k=mod(j,ngens(RP));
+            #print(gram1[j])
+            if k==0
+                W[i-1,ngens(RP)]=gram1[j];  
+                #print("(",i-1,",",ngens(RP),")=",gram1[j])
+            else
+                W[i,k]=gram1[j];   
+               # print("(",i,",",k,")=",gram1[j])
+            end     
+    end
+    
+    
+#---Adding terms independent of loop momenta
     for i in 1:startvars-1 
         for j in i+1:startvars-1 
             PI=PI+ideal(R,[varRP[i]*varRP[j]]);
         end
     
     end
-
-#---getting minimal generating set
+    #ngens(PI)
+    #PI
+#---Writing PI as an idal of RP
 
     a=Vector{typeof(RP(1))}(undef,0);
     for i in 1:ngens(PI) 
         push!(a,H(PI[i]));
     end
     PI=ideal(RP,a);
-    v=Vector{typeof(RP(1))}(undef,0);
-    for i in 1:ngens(PI) 
-        push!(v,PI[i]);
-    end
-    PI=ideal(RP,v);
-
+   
 #---------------------------------
 
     v=Vector{typeof(RP(1))}(undef,0);
@@ -923,17 +1027,40 @@ function computeBaikovMatrix(G)
         push!(v,H(PI[i]));
     end
 
-    m=length(para);
+#---------------Ordering terms in IP appropreately for further calculations--------------------------
+    o=invlex(RP);
+    w=Vector{typeof(RP(1))}(undef,0);
+    while length(v)!=0 
+        k=1;
+        for j in 2:length(v) 
+            f=v[k];
+            f1=leading_monomial(f,ordering=o);
+            g=leading_monomial(v[j],ordering=o);
+                    if cmp(o,f1,g)==1   
+                        k=j;                            
+                    end
+            
+        end
+            push!(w,v[k]);
+            deleteat!(v,[k]);       
+    end
+    v=w;
+    PI=ideal(RP,v);
+
+#----------------------------------
+    m=length(para)
     m2=Int(m*(m-1)/2);  
     if m2==0
-        mt=0;
+        mt=1;
     else
         mt=m2-1;
     end
     n=ngens(PI)-m2;
 
+    #ngens(PI)
     Z=Feynman.makePoly(mt,n);
     t=gens(Z);
+    
     z=Vector{typeof(t[1])}(undef,0);
     for i in 1:n
         push!(z,t[mt+i]);         
@@ -941,7 +1068,7 @@ function computeBaikovMatrix(G)
     
     B=zeros(Z,length(varRP),length(varRP));
     pq=Vector{typeof(t[1])}(undef,0);
-   sumt=Z(0);
+    sumt=Z(0);
 
     idx=1;
     for i in 1:m
@@ -960,27 +1087,56 @@ function computeBaikovMatrix(G)
     
     end
 
+
     zvar=Matrix{typeof(t[1])}(undef,1,n+m2);
-
-    for i in 1:n    
-        zvar[1,i]=z[i]; 
-    end
-
-    for i in 1:m2
-        zvar[1,i+n]=pq[i];     
-    end
     
-   
+    for i in 1:m2
+        zvar[1,i]=pq[i];     
+    end
+    for i in 1:n    
+        zvar[1,i+m2]=z[i]; 
+    end
+#-----------------Printing of Baikov variable assigment
+    ev=[];
+    println("labels used for Gram matrix of external loop momenta:");
+    for i in 1:m2 
+        t=string(string(gens(PI)[i])," => ",string(zvar[i]));
+        push!(ev,t);
+        printNet(ev);
+        ev=[];
+    end
+  
+    println("Assignment of Baikov variables (Z_i) are:");
+    ev=[];
+    for i in 1:n 
+        t=string(string(zvar[i+m2])," => ",string(gens(PI)[i+m2]));
+        push!(ev,t);
+        printNet(ev);
+        ev=[];
+    end
+  
+
+#---------------------------------------------------------
     X=ideal(RP,gram1);
-    #is_subset(X,PI)
-    H,I=groebner_basis_with_transformation_matrix(PI,ordering=lex(RP),complete_reduction=true);
-    T,J=groebner_basis_with_transformation_matrix(X,ordering=lex(RP),complete_reduction=true);
+#    is_subset(X,PI)
+    H,I=groebner_basis_with_transformation_matrix(PI,ordering=invlex(RP));
+    T,J=groebner_basis_with_transformation_matrix(X,ordering=invlex(RP));
     I1=Matrix{typeof(Z(1))}(undef,ngens(PI),length(H));
+    I2=Matrix{Int}(undef,ngens(PI),length(H));
+    I3=Matrix{typeof(RP(1))}(undef,ngens(PI),length(H));
     J1=Matrix{typeof(Z(1))}(undef,ngens(X),length(T));
+#   gens(PI)*I==gens(H)
+    #gens(PI)
+    #gens(PI)
+    y=Matrix{typeof(RP(1))}(undef,1,ngens(PI));
+    for i in 1:ngens(PI) 
+        y[1,i]=PI[i];
+    end
     
     for i in 1:ngens(PI) 
         for j in 1:length(H)
             I1[i,j]=Z(constant_coefficient(I[i,j]));
+            I2[i,j]=Int(constant_coefficient(I[i,j]));
         end
     end
 
@@ -1003,13 +1159,14 @@ function computeBaikovMatrix(G)
         push!(w,T[i]);
     end
 
-    #is_subset(ideal(RP,w),ideal(RP,v))
+   # is_subset(ideal(RP,w),ideal(RP,v))
 
     A=Matrix{typeof(Z(1))}(undef,length(v),length(gram1));
     D=Matrix{typeof(Z(1))}(undef,length(v),length(gram1));
 
     for i in 1:length(gram1)
-         u=reduce_with_quotients(gram1[i],v,ordering=lex(RP),complete_reduction=true);
+         u=reduce_with_quotients(gram1[i],v,ordering=invlex(RP));
+         #print(u)
             for j in 1:length(u[1]) 
                 if u[1][j]==0
                     A[j,i]=Z(0);
@@ -1022,6 +1179,17 @@ function computeBaikovMatrix(G)
             end 
     end
 
+    #transpose(V*D)
+    f=Matrix{typeof(RP(1))}(undef,nrows(I),ncols(I));
+    for i in 1:nrows(I)
+        for j in 1:ncols(I)
+            f[i,j]=RP(I[i,j]);
+        end 
+        
+    end
+    #transpose(y*f*D)
+
+    #Bentries=zvar*transpose(I1)*A
     Bentries=zvar*I1*A;
     B1=Matrix{typeof(Z(1))}(undef,ngens(RP),ngens(RP));    
     for j in 1:length(Bentries)
@@ -1033,6 +1201,7 @@ function computeBaikovMatrix(G)
                 B1[i,k]=Bentries[1,j];   
             end     
     end
+    
     B=B1+B;
     G.baikovover=Z;
     G.baikovmatrix=B;
