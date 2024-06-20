@@ -13,7 +13,7 @@ makedocs(;
     expandfirst = ["Overview.md"],
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://honnatht.github.io/Feynman.jl",
+        canonical="https://singular-gpispace.github.io/Feynman.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -37,6 +37,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/honnatht/Feynman.jl",
+    repo="github.com/singular-gpispace/Feynman.jl",
     devbranch="main",
 )
