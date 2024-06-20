@@ -9,6 +9,4 @@ Documentation for [Feynman](https://github.com/singular-gpispace/Feynman.jl).
 ```@index
 ```
 
-```@autodocs
-Modules = [Feynman]
-```
+

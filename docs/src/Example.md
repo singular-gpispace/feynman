@@ -3,7 +3,7 @@ CurrentModule=Feynman
 ```
 # Example : Fully massless nonplanar double pentagon
 
-![alt text](img/non%20plannar%20double%20pentagon.png)
+![alt text](img/non_plannar_double_pentagon.png)
 
 To provide an example on how to use our package, we calculate the Baikov matrix of the fully massless nonplanar double pentagon. 
 
@@ -97,7 +97,7 @@ julia> G.baikovmatrix
 
 # Example: Fully massless planar double box 
 
-![alt text](img/plannar%20box.png)
+![alt text](img/plannar_box.png)
 
 ```julia
 julia> G=Feynman.simple_graph([1,2,3,4,5,6],[(6,1),(4,6),(1,2),(3,5),(4,3),(2,5),(5,6),1,2,3,4]);
