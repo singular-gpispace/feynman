@@ -13,7 +13,7 @@ We define the graph G from the list of vertices and list of edges. The direction
 julia> G=simple_graph([1,2,3,4,5,6,7],[(6,1),(6,4),(1,2),(3,7),(4,3),(2,7),(5,6),(7,5),1,2,3,4,5]);
 ```
 
-We then assign polynomial variables $q_i$ at bounded edges and function field variables $P_i$ at the unbounded edges over a prime filed of characteristic 0.
+We then assign polynomial variables q[i] at bounded edges and function field variables P[i] at the unbounded edges over a prime filed of characteristic 0.
 
 ```julia
 
@@ -26,7 +26,7 @@ Edge terms:
 
 ```
 
-Then we use balancing condition of the graph (realtions of momenta which are obtained by applying momentum conservation law at each vertex of the graph and to the whole graph) to rewrite each dependent momenta in terms of the eliments in the ordered set $V$ of external momenta and loop momenta. Here we use invlex ordering on $p_1,...,p_E,q_1,...,q_L$ to choose independent external momenta and independent loop momenta. G.elimVars will store the eliminated variables.
+Then we use balancing condition of the graph (realtions of momenta which are obtained by applying momentum conservation law at each vertex of the graph and to the whole graph) to rewrite each dependent momenta in terms of the eliments in the ordered set $V$ of external momenta and loop momenta. Here we use invlex ordering on p[1],...,p[E],q[1],...,q[L]$ to choose independent external momenta and independent loop momenta. G.elimVars will store the eliminated variables.
 
 ```julia
 julia> G=eliminateVariables(G);
@@ -61,7 +61,7 @@ QQMPolyRingElem[p[1], p[2], p[3], p[4], p[5], q[1], q[2]]
 ```
 
 
-We then calculate the Baikov matrix associated to Feynman integral of G. It will also print the assignment of Baikov variables $z_i to each inverse propagators and irreducible scalar products of G.
+We then calculate the Baikov matrix associated to Feynman integral of G. It will also print the assignment of Baikov variables z[i] to each inverse propagators and irreducible scalar products of G.
 
 ```julia
 julia> G=computeBaikovMatrix(G);
