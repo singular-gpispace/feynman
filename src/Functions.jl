@@ -18,6 +18,7 @@ export removeElimVars
 export computeBaikovMatrix
 export makePoly
 export removeVariableLocal
+export computeIBP
 function greet()
     return "Hello"
 end
@@ -1247,4 +1248,163 @@ RETURN: A polynomial ring with vatiables t[1],...,t[n],z[1],...,z[m] over QQ.
 function makePoly(n::Int,m::Int)
     Z,t,z=polynomial_ring(QQ,"t"=>(1:n),"z"=>(1:m));
     return Z;
+end
+
+function computeIBP(G::labeledgraph)
+#Compute M1 and M2
+RZ=G.baikovover;
+R=G.over;
+gens_RZ=gens(RZ);
+B=G.baikovmatrix;
+#Count E and Count L
+npars=0;
+    p=gens(base_ring(R));
+    para=[];
+    
+    for i in 1:length(p) 
+    
+        if p[i] in inverted_set(R)
+            continue;
+        else
+            push!(para,p[i]); 
+            npars=npars+1;
+        end
+          
+    end
+    m=length(para);
+    E=m;
+    m2=Int(m*(m-1)/2);
+    mt=0;  
+    if m2==0
+        mt=1;
+    else
+        mt=m2-1;
+    end
+    L=length(p)-E;
+    
+    #Getting t vector and z vector
+    var_t=Vector{typeof(RZ(1))}(undef,0);
+    var_z=Vector{typeof(RZ(1))}(undef,0);
+    
+    for i in 1:mt
+        push!(var_t,gens_RZ[i]);
+    end
+    for i in mt+1:length(gens_RZ) 
+        push!(var_z,gens_RZ[i]);
+    end
+    #Computing generators of M1
+    t=[];
+    n=L*E+Int(L*(L+1)/2);
+    
+for i in E+1:E+L
+    for j in 1:E+L
+        v=Vector{typeof(RZ(1))}(undef,0);
+        for l in 1:n #here l is alpha
+            a=RZ(0);
+         for k in 1:E+L 
+            if i==k
+                d=RZ(2);
+            else
+                d=RZ(1);
+            end
+            dr=derivative(B[i,k],var_z[l]);
+            if dr!=0
+                c=RZ(1/dr);
+            else
+                c=RZ(0);                
+            end
+            a=a+d*c*B[j,k];
+         end   
+         push!(v,a);
+         
+        end
+            if i==j
+                b=RZ(-2);
+            else
+                b=RZ(0);
+            end
+            push!(v,b);
+            push!(t,v);
+         #   v=Vector{typeof(RZ(1))}(undef,0);
+    end 
+    
+end
+
+#Computation of M2
+m=length(var_z);
+A=Matrix{typeof(RZ(1))}(undef,2*length(t[1]),length(t[1])+length(t)+length(t[1]));
+B=Matrix{typeof(RZ(1))}(undef,2,2);
+
+#filling vertical block 1
+for j in 1:length(t[1])
+    for i in 1:length(t[1]) 
+        if i==j
+            A[i,j]=RZ(1);
+            A[i+m,j]=RZ(1);
+        else
+            A[i,j]=RZ(0);
+            A[i+m,j]=RZ(0);
+        end
+    end 
+    
+end
+for i in 1+length(t[1]):2*length(t[1])
+    for j in 1:length(t[1]) 
+        if i-length(t[1])==j
+            A[i,j]=RZ(1);
+        else
+            A[i,j]=RZ(0);
+        end
+    end 
+    
+end
+
+#filling vertical block 2
+for i in 1:length(t[1])
+    for j in 1:length(t) 
+        A[i,j+length(t[1])]=t[j][i];
+    end
+    
+end
+
+for i in 1+length(t[1]):2*length(t[1])
+    for j in 2+length(t):length(t)+length(t[1]) 
+        A[i,j]=RZ(0);
+    end 
+    
+end
+
+#filling vertical block 3
+for i in 1:length(t[1])
+    for j in 1:length(t[1]) 
+        A[i,j+length(t)+length(t[1])]=RZ(0);
+    end
+    
+end
+for i in 1:length(t[1])
+    for j in 1:length(t[1]) 
+        if i==j
+            if j<=length(var_z)
+                A[i+length(t[1]),j+length(t)+length(t[1])]=RZ(var_z[j]);
+            else
+                A[i+length(t[1]),j+length(t)+length(t[1])]=RZ(1);#last column is problamatic, as g-i has 9 components and f_1 has 10 components
+            end
+            
+        else
+            A[i+length(t[1]),j+length(t)+length(t[1])]=RZ(0);
+        end
+    end 
+    
+end
+
+
+S=matrix_space(RZ,2*length(t[1]),length(t[1])+length(t)+length(t[1]));
+C=S(A);
+#Compute Module intersection
+
+F=free_module(RZ,length(t[1])+length(t)+length(t[1]));
+G=free_module(RZ,2*length(t[1]));
+f=hom(F,G,transpose(C));
+M, incl=kernel(f);
+return M;
 end

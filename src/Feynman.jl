@@ -23,6 +23,7 @@ export removeElimVars
 export computeBaikovMatrix
 export makePoly
 export removeVariableLocal
+export computeIBP
  include("Functions.jl")
  include("DataTypes.jl")
 # Write your package code here.
