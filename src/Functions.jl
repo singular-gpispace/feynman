@@ -103,6 +103,13 @@ Edge terms:
 """
 
 function labelGraph(G::simple_graph,ch::Int)
+    if length(G.edges)==0
+        error("Graph must have vertices")
+    elseif ch<0
+
+        error("ch must be nonnegative integer")
+    
+    end
     ct=0;
     for i in 1:length(G.edges)
         if length(G.edges[i])==1
@@ -213,9 +220,13 @@ function balancingIdeal(G::labeledgraph)
  return I+J;
 end
 
-#substitute the label 'a' in the labeling by 'b'
-#Assume G is a labeled graph
-#Return a labelled graph with labelling where each 'a' is replaced 'b'
+@doc raw""" 
+substituteGraph(G::labeledgraph,a::RingElement,b::RingElement)
+USAGE:substituteGraph(G,a,b)
+ASSUME: G is a labeled graph
+RETURN:a labelled graph with labelling where each 'a' is replaced 'b'
+"""
+
 function substituteGraph(G::labeledgraph,a::RingElement,b::RingElement)
     L=G.labels;
     for i in 1:length(L)
@@ -377,14 +388,14 @@ function removeVariableLocal(P::Ring,l::Vector)
     nv=0;
     genR=gens(R);
     for j in 1:length(l)
-        if l[j]<0|| l[j]>ngens(R)
+        if l[j]<0|| l[j]>ngens(R) 
             throw(error("Index out of range"));
         end 
         
     end
 
     genR=deleteat!(gens(R),l);
-        print(genR);
+        #print(genR);
 
     v=String[];
     for i in 1:length(genR)

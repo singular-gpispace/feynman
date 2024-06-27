@@ -14,8 +14,6 @@ jobs:
       - uses: julia-actions/setup-julia@v1
       - uses: julia-actions/cache@v1
       - name: Install dependencies
-        run: julia --color=yes --project=d0cs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
-      - name: Build and deploy 
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}       
+        run: julia --color=yes --project=d0cs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate();'
+      - name: Build and deploy          
         run: julia --color=yes --project=d0cs docs/make.jl

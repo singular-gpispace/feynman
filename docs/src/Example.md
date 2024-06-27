@@ -1,6 +1,3 @@
-```@meta
-CurrentModule=Feynman
-```
 # Example : Fully massless nonplanar double pentagon
 
 ![alt text](img/non_plannar_double_pentagon.png)
