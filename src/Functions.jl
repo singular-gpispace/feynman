@@ -1,5 +1,5 @@
 using Oscar
-include("DataTypes.jl")
+#include("DataTypes.jl")
 
 export greet
 export printNet
@@ -19,6 +19,45 @@ export computeBaikovMatrix
 export makePoly
 export removeVariableLocal
 export computeIBP
+
+
+#----------------------------------
+export sample1
+export Net
+export simple_graph
+export labeledgraph
+
+mutable struct sample1
+    a::Int
+end
+mutable struct simple_graph
+    vertices :: Vector{Int64}
+    edges :: Vector
+end
+
+mutable struct Net
+    rows :: Vector
+end
+
+
+
+mutable struct labeledgraph
+    vertices :: Vector{Int64}
+    edges :: Vector
+    over :: Ring
+    labels :: Vector
+    overpoly ::Ring
+    elimvar ::Vector
+    baikovover :: Ring
+    baikovmatrix :: Matrix{RingElem}
+end
+#----------------------------------
+
+
+
+
+
+
 function greet()
     return "Hello"
 end
@@ -1341,7 +1380,7 @@ for i in E+1:E+L
     
 end
 
-#Computation of M2
+#=Computation of M2
 m=length(var_z);
 A=Matrix{typeof(RZ(1))}(undef,2*length(t[1]),length(t[1])+length(t)+length(t[1]));
 B=Matrix{typeof(RZ(1))}(undef,2,2);
@@ -1377,7 +1416,26 @@ for i in 1:length(t[1])
     end
     
 end
+=#
+#print the generators of syzygies
+println("generators of the module of syzygies: (number of generators=",length(t),")")
+for i in 1:length(t[1])
+    k=mod(i,E+L);
+    l=divrem(i,E+L+1)[1];
+    if k==0
+        k=E+L
+    end
 
+    println("f[",E+1+l,k,"]=")
+        printNet(t[i]);
+    
+    
+end
+
+
+
+
+#=
 for i in 1+length(t[1]):2*length(t[1])
     for j in 2+length(t):length(t)+length(t[1]) 
         A[i,j]=RZ(0);
@@ -1418,4 +1476,5 @@ G=free_module(RZ,2*length(t[1]));
 f=hom(F,G,transpose(C));
 M, incl=kernel(f);
 return M;
+=#
 end

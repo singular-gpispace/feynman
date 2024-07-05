@@ -24,8 +24,13 @@ export computeBaikovMatrix
 export makePoly
 export removeVariableLocal
 export computeIBP
+
+export sample1
+export Net
+export simple_graph
+export labeledgraph
  include("Functions.jl")
- include("DataTypes.jl")
+ #include("DataTypes.jl")
 # Write your package code here.
 
 
