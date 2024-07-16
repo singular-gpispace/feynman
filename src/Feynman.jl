@@ -24,7 +24,7 @@ export computeBaikovMatrix
 export makePoly
 export removeVariableLocal
 export computeIBP
-
+export printIBP
 export sample1
 export Net
 export simple_graph
