@@ -1470,7 +1470,7 @@ function computeIBP(G::labeledgraph,numPropagators::Int64,cutDeg::Int)
        end
    
        for i in length(t[1]):2*(length(t[1])-1)
-           for j in length(t)+1:length(t)+length(t[1])-1 
+           for j in length(t[1])-1:length(t)+length(t[1])-1 
                A[i,j]=RZ(0);
            end 
            
