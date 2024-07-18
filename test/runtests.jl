@@ -6,3 +6,4 @@ using Oscar
 include("funct.jl")
 
 
+
