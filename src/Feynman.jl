@@ -29,6 +29,7 @@ export sample1
 export Net
 export simple_graph
 export labeledgraph
+export computeM1
  include("Functions.jl")
  #include("DataTypes.jl")
 # Write your package code here.

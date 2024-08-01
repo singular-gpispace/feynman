@@ -20,7 +20,7 @@ export makePoly
 export removeVariableLocal
 export computeIBP
 export printIBP
-
+export computeM1
 #----------------------------------
 export sample1
 export Net
@@ -991,8 +991,16 @@ julia> G.baikovmatrix
  1//2*z[3] - 1//2*z[4]     -1//2*z[3] - 1//2*z[7] + 1//2*z[10]
  z[6]                   …  z[7]```
 """
-function computeBaikovMatrix(G)
-    if typeof(G)=="graph"
+
+function computeBaikovMatrix(G::simple_graph)
+    G=labelGraph(G,0);
+    G=eliminateVariables(G);
+    G=removeElimVars(G);
+return computeBaikovMatrix(G);
+end
+
+function computeBaikovMatrix(G::labeledgraph)
+    if typeof(G)=="simple_graph"
         lG=labelGraph(G,0);
         G1=eliminateVariables(lG);
         G2=removeElimVars(G1);
@@ -1026,7 +1034,6 @@ function computeBaikovMatrix(G)
         push!(v,P[i]);
        
     end
-    
     
 #-------------------------------------ordering elements
     npars=0;
@@ -1078,7 +1085,7 @@ function computeBaikovMatrix(G)
                # print("(",i,",",k,")=",gram1[j])
             end     
     end
-    
+
     
 #---Adding terms independent of loop momenta
     for i in 1:startvars-1 
@@ -1137,7 +1144,7 @@ function computeBaikovMatrix(G)
     #ngens(PI)
     Z=Feynman.makePoly(mt,n);
     t=gens(Z);
-    
+    t=deleteat!(t,mt+1);
     z=Vector{typeof(t[1])}(undef,0);
     for i in 1:n
         push!(z,t[mt+i]);         
@@ -1173,7 +1180,8 @@ function computeBaikovMatrix(G)
     for i in 1:n    
         zvar[1,i+m2]=z[i]; 
     end
-#-----------------Printing of Baikov variable assigment
+
+    #-----------------Printing of Baikov variable assigment
     ev=[];
     println("labels used for Gram matrix of external loop momenta:");
     for i in 1:m2 
@@ -1296,7 +1304,16 @@ ASSUME: m and n are positve integers.
 RETURN: A polynomial ring with vatiables t[1],...,t[n],z[1],...,z[m] over QQ. 
 """
 function makePoly(n::Int,m::Int)
-    Z,t,z=polynomial_ring(QQ,"t"=>(1:n),"z"=>(1:m));
+    v=Vector{String}(undef,0);
+    for i in 1:n 
+        push!(v,"t[$i]");  
+    end
+        push!(v,"D");
+    for i in 1:m 
+        push!(v,"z[$i]");  
+    end
+    #Z,t,z=polynomial_ring(QQ,"t"=>(1:n),"z"=>(1:m));
+    Z,t=polynomial_ring(QQ,v);
     return Z;
 end
 
@@ -1307,26 +1324,42 @@ USAGE:  computeIBP(G,ν,d);
 ASSUME: G is a labeled graph, d is a positive integer and ν is vector of integers correspond to the parent diagram of the integral.
 RETURN: A set of simplified IBP identities without double propagators (without performing trimming) . 
 """
+function computeIBP(G::simple_graph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool)
+    G=Feynman.labelGraph(G,0);
+    G=Feynman.eliminateVariables(G);
+    G=Feynman.removeElimVars(G);
+    G=Feynman.computeBaikovMatrix(G);
+    return computeIBP(G,Nu,cutDeg,showGens);
+end
+
+function computeIBP(G::simple_graph,Nu::Vector{Int64},cutDeg::Int)
+    G=Feynman.labelGraph(G,0);
+    G=Feynman.eliminateVariables(G);
+    G=Feynman.removeElimVars(G);
+    G=Feynman.computeBaikovMatrix(G);
+    return computeIBP(G,Nu,cutDeg,true);
+end
 
 function computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int)
-RZ=G.baikovover;
-R=G.over;
-gens_RZ=gens(RZ);
-B=G.baikovmatrix;
-D=4;
+    return computeIBP(G,Nu,cutDeg,true);
+end
 
+function computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool)
+
+    RZ=G.baikovover;
+    R=G.over;
+    gens_RZ=gens(RZ);
+    B=G.baikovmatrix;
 #-----------------------------------------------------------------------------------#
-size(G.baikovmatrix)
-S=matrix_space(RZ,size(G.baikovmatrix)[1],size(G.baikovmatrix)[2]);
-C=S(G.baikovmatrix);
-f=det(C);  
+    S=matrix_space(RZ,size(G.baikovmatrix)[1],size(G.baikovmatrix)[2]);
+    C=S(G.baikovmatrix);
+    f=det(C);  
 #-----------------------------------------------------------------------------------#
 #Compute E and Count L
-    npars=0;
+   npars=0;
    p=gens(base_ring(R));
    para=[];
    for i in 1:length(p) 
-   
        if p[i] in inverted_set(R)
            continue;
        else
@@ -1348,22 +1381,296 @@ f=det(C);
    #----------Getting t vector and z vector-------------
    var_t=Vector{typeof(RZ(1))}(undef,0);
    var_z=Vector{typeof(RZ(1))}(undef,0);
-   
    for i in 1:mt
        push!(var_t,gens_RZ[i]);
    end
-   for i in mt+1:length(gens_RZ) 
+   for i in mt+2:length(gens_RZ) #changed 
        push!(var_z,gens_RZ[i]);
    end
 
-   #-----------Compute k---------------
-   
     if length(Nu)!=length(var_z)
         error("length of the vector nu must equal to number of Baikov variables");
     end  
 
 #-------------Computing generators of M1--------------------------
-   t=[];
+   t=computeM1(G);
+   n=L*E+Int(L*(L+1)/2);
+#=Test for whether the computed generators are correct
+
+    for j in 1:length(t) 
+        g=RZ(0);
+    for i in 1:(length(t[1])-1) 
+        g=g+t[j][i]*derivative(f,length(var_t)+1+i);
+    end
+        println(g+t[j][length(t[1])]*f)
+    end
+=#
+    m=length(var_z);
+
+
+#-----------------------------------------------------------------------------------#
+# --------------compute module intersection and  Groebner basis---------------------#
+#-----------------------------------------------------------------------------------#
+
+##------Defining the polynomial ring RZ in Singular----------------------------------#
+    v1=Vector{String}(undef,0);
+    v2=Vector{String}(undef,0);
+
+    for i in 1:length(var_t) 
+        push!(v1,"t[$i]");  
+    end
+    push!(v1,"D");
+
+    for i in 1:length(var_z) 
+        push!(v2,String("z[$i]"));  
+    end
+
+    v=convert(AbstractArray,vcat(v1,v2));
+    T,var=Singular.polynomial_ring(Singular.QQ,v,ordering=Singular.ordering_ls(length(v1))*Singular.ordering_dp(),degree_bound=cutDeg);
+##-------Build the module M1----------------------------------------------------------#
+
+    gens_M1=[];
+    for i in 1: length(t)#size(A)[2]
+        v=Vector{typeof(T(1))}(undef,0);
+   #u=transpose(A[:,i]);
+        u=t[i];
+    for j in 1:length(u)-1 
+        push!(v,T(u[j]))  
+    end
+        push!(gens_M1,Singular.vector(T,v...))
+   
+    end
+    M1=Singular.Module(T,gens_M1...);
+
+##--------Build the module M2-----------------------------------------------------------#
+    gens_M2=[];
+    for j in 1:length(t[1])-1
+    v=Vector{typeof(T(1))}(undef,0);;
+    for i in 1:length(t[1])-1 
+        if i==j && j<=length(t[1])-1
+             if Nu[j]>0 
+                 push!(v,T(var_z[j]));       
+            else #j<=length(t[1]) #j<=length(t[1])-1
+                push!(v,T(1));
+            end
+    
+        else
+                push!(v,T(0));
+        end          
+    end 
+    push!(gens_M2,Singular.vector(T,v...));
+    end
+
+    M2=Singular.Module(T,gens_M2...);
+  
+    if showGens
+    println("Generators of M1 are:");
+    printNet(gens_M1);
+    println("Generators of M2 are:");
+    printNet(gens_M2);
+   end
+    
+##-------------------Compute Module intersection------------------------------------------# 
+    G=Singular.intersection(M1,M2);
+    G=Singular.std(G,complete_reduction=true);
+
+#-----------------------------------------------------------------------------------#
+# ------compute IBP identities correspond to generators of the Groebner basis--------#
+#------------------------------------------------------------------------------------#
+
+##------Convert generators of Groebner basis (in Singular) to generators in Oscar-----
+    vecG=[];
+    for i in 1:Singular.number_of_generators(G) 
+        u=Singular.Base.Array(G[i]);
+        v=[];
+        for j in 1:length(u) 
+            push!(v,RZ(u[j]));
+        end
+   
+       push!(vecG,v);
+    end
+
+#--------------------------------------------------
+#--------------------------------------------------
+    for j in 1:length(vecG) 
+        w=vecG[j]
+        g=RZ(0);
+        for i in 1:length(w) 
+            g=g+w[i]*derivative(f,length(var_t)+1+i);
+        end
+
+        if g==0
+            bj=0;
+            hj=0;
+            push!(vecG[j],bj[1]);
+        else
+       #e=j-invP;
+            bj, hj = reduce_with_quotients(g, [f], ordering = invlex(RZ));
+            if hj==0
+                push!(vecG[j],bj[1]);
+            else
+            deleteat!(VecG,j);
+            end
+        end
+
+    end
+
+#=------------------test again for correct calculation
+    for i in 1:length(vecG) 
+        w=vecG[i]
+        g=RZ(0);
+        for i in 1:length(w)-1 
+            g=g+w[i]*derivative(f,length(var_t)+1+i);
+        end
+        println(g-w[length(w)]*f)
+
+    end  
+=#
+##---------------Computation of IBP identities------------------------------------------------
+    set_IBP=[];
+    for i in 1:length(vecG) 
+        u=vecG[i];
+        v=[];
+        proz=RZ(1);        
+        for j in 1:m
+            proz=proz*var_z[j];
+        end
+
+        for j in 1:length(u)-1 
+       
+               if u[j]==0
+                   bj=0;
+                     hj=0;
+                else
+              #e=j-invP;
+                    g=proz*u[j];
+                    bj, hj = reduce_with_quotients(g, [var_z[j]], ordering = invlex(RZ));
+                end
+                push!(v,bj[1]);      
+        end
+   #Compute Baikov identity associated to generator vecG[i]
+   ##---1---compute m1= (\sum_{i=1}^{m}\frac{\partial a_i}{\partial z_i}
+        m1=RZ(0);
+        for j in 1:length(u)-1 
+            m1=m1+derivative(u[j],length(var_t)+1+j);
+        end
+   ##---2---compute m3=\sum_{i=1}^{m} \frac{\nu_i a_i}{z_i}
+        m2=RZ(0);
+        for j in 1:length(u)-1 
+            m2=m2+RZ(Nu[j])*v[j];
+        end
+   M=RZ((m1-(gens_RZ[length(var_t)+1]-L-E-1)*RZ(1//2)*u[m+1])*proz-m2);
+        single_IBP=[];
+        single_IBP_i=[];
+        single_IBP_c=[];
+        for j in 1:length(M) 
+            degT=degrees(monomial(M,j)); #degree sequence of (t1,...,t_k,D,z_1,...,z_m)
+            deg_t=first(degT,length(var_t)+1);
+            deg_z=last(degT,length(var_z));
+            cTerm=RZ(1);
+            for l in 1:length(var_t)+1
+          #cTerm=cTerm*var_t[l]^deg_t[l];
+                cTerm=cTerm*gens(RZ)[l]^deg_t[l];
+            end
+            cTerm=cTerm*coeff(M,j);
+            iTerm=deg_z-Nu;
+       #Since we multiplied the expression by prod_z, 
+            for l in 1:length(iTerm) 
+                iTerm[l]=iTerm[l]-1;
+            end
+            push!(single_IBP,[cTerm,iTerm]);
+            push!(single_IBP_c,cTerm);
+            push!(single_IBP_i,iTerm);
+        end
+        if single_IBP!=[]
+            #Need to simplify the IBP
+            IBP=[];
+            while length(single_IBP_i)!=0
+                w=single_IBP_i[1];
+                ind=findall(x->x==w,single_IBP_i);
+                coef=RZ(0);
+                for l in 1:length(ind) 
+                    coef=coef+single_IBP_c[ind[l]];
+                end
+                push!(IBP,[coef,w]);
+                deleteat!(single_IBP_i,ind);
+                deleteat!(single_IBP_c,ind);
+            end
+            push!(set_IBP,IBP);   
+        end
+    end
+ 
+return set_IBP;
+end
+
+@doc raw"""
+printIBP(set_IBP::Vector{Vector{}},n::Int64)
+USAGE:  printIBP(single_IBP,n); 
+"""
+function printIBP(set_IBP::Vector,n::Int64)
+    
+    if n>length(set_IBP)
+        error("N must be less or equal to number of IBP identities");
+    end
+    println("First ",n," IBP identities associated to G  (Total number of relations=",length(set_IBP),"):")
+   
+    for j in 1:n
+        ve=set_IBP[j];
+        ev=[];
+    for i in 1:length(ve) 
+        t1=join(repr.(ve[i][2]),",");
+        t=string(string("("),string(ve[i][1]),string(")"),string("I("),t1,string(")"));
+        push!(ev,t);
+    end
+    println('0','=',join(ev,"+")); 
+     println();   
+    end
+end
+
+function computeM1(G::labeledgraph)
+    RZ=G.baikovover;
+    R=G.over;
+    gens_RZ=gens(RZ);
+    B=G.baikovmatrix;
+    
+    S=matrix_space(RZ,size(G.baikovmatrix)[1],size(G.baikovmatrix)[2]);
+    C=S(G.baikovmatrix);
+    f=det(C);
+
+    npars=0;
+    p=gens(base_ring(R));
+    para=[];
+    for i in 1:length(p) 
+    
+        if p[i] in inverted_set(R)
+            continue;
+        else
+            push!(para,p[i]); 
+            npars=npars+1;
+        end
+          
+    end
+    m=length(para);
+    E=m;
+    m2=Int(m*(m-1)/2);
+    mt=0;  
+    if m2==0
+        mt=1;
+    else
+        mt=m2-1;
+    end
+    L=length(p)-E;        
+    #----------Getting t vector and z vector-------------
+    var_t=Vector{typeof(RZ(1))}(undef,0);
+    var_z=Vector{typeof(RZ(1))}(undef,0);
+    for i in 1:mt
+        push!(var_t,gens_RZ[i]);
+    end
+    for i in mt+2:length(gens_RZ) #changed 
+        push!(var_z,gens_RZ[i]);
+    end
+
+    t=[];
    n=L*E+Int(L*(L+1)/2);
 
 
@@ -1380,7 +1687,7 @@ f=det(C);
             end
         end
     end
-    push!(ij,[E+L,E+L]);
+    push!(ij,[E+L,E+L])
     for l in 1:length(var_z) 
         W[length(var_z),l]=derivative(B[E+L,E+L],var_z[l]);
 
@@ -1424,200 +1731,5 @@ f=det(C);
         end 
    
     end
-
-#=Test for whether the computed generators are correct
-for j in 1:length(t) 
-    g=RZ(0);
-for i in 1:(length(t[1])-1) 
-    g=g+t[j][i]*derivative(f,length(var_t)+i);
-end
-    println(g+t[j][length(t[1])]*f)
-end
-=#
-
-m=length(var_z);
-
-
-#-----------------------------------------------------------------------------------#
-# --------------compute module intersection and  Groebner basis---------------------#
-#-----------------------------------------------------------------------------------#
-
-##------Defining the polynomial ring RZ in Singular----------------------------------#
-v1=Vector{String}(undef,0);
-v2=Vector{String}(undef,0);
-
-for i in 1:length(var_t) 
- push!(v1,"t[$i]");  
-end
-
-for i in 1:length(var_z) 
-   push!(v2,String("z[$i]"));  
- end
-
-v=convert(AbstractArray,vcat(v1,v2));
-T,var=Singular.polynomial_ring(Singular.QQ,v,ordering=Singular.ordering_ls(length(v1))*Singular.ordering_dp(),degree_bound=cutDeg);
-
-##-------Build the module M1----------------------------------------------------------#
-gens_M1=[];
-for i in 1: length(t)#size(A)[2]
-   v=Vector{typeof(T(1))}(undef,0);
-   #u=transpose(A[:,i]);
-    u=t[i];
-   for j in 1:length(u) 
-     push!(v,T(u[j]))  
-   end
-   push!(gens_M1,Singular.vector(T,v...))
-   
-end
-M1=Singular.Module(T,gens_M1...);
-
-##--------Build the module M2-----------------------------------------------------------#
-gens_M2=[];
-for j in 1:length(t[1])
- v=Vector{typeof(T(1))}(undef,0);;
- for i in 1:length(t[1]) 
-     if i==j && j<=length(t[1])-1
-         if Nu[j]>0 
-             push!(v,T(var_z[j]));       
-         else j<=length(t[1])-1
-             push!(v,T(1));
-         end
-    else 
-            push!(v,T(0));
-    end          
- end 
- push!(gens_M2,Singular.vector(T,v...));
-end
-gens_M2
-M2=Singular.Module(T,gens_M2...);
-
-##-------------------Compute Module intersection------------------------------------------# 
-G=Singular.intersection(M1,M2);
-G=Singular.std(G,complete_reduction=true);
-#G=Singular.jet(Singular.std(G,complete_reduction=true),cutDeg);
-
-
-                #------*****Singular computation is over*****-----------#
-
-
-#-----------------------------------------------------------------------------------#
-# ------compute IBP identities correspond to generators of the Groebner basis--------#
-#------------------------------------------------------------------------------------#
-
-##------Convert generators of Groebner basis (in Singular) to generators in Oscar-----
-vecG=[];
-for i in 1:Singular.number_of_generators(G) 
-   u=Singular.Base.Array(G[i]);
-   v=[];
-   for j in 1:length(u) 
-       push!(v,RZ(u[j]));
-   end
-   
-       push!(vecG,v);
-end
-#=------------------test again for correct calculation
-for i in 1:length(vecG) 
-w=vecG[i]
-g=RZ(0);
-for i in 1:length(w)-1 
-g=g+w[i]*derivative(f,length(var_t)+i);
-end
-println(g-w[length(w)]*f)
-
-end  
-=#
-##---------------Computation of IBP identities------------------------------------------------
-
-set_IBP=[];
-for i in 1:length(vecG) 
-   u=vecG[i];
-   v=[];
-   #Computation of bj for j<=k using aj=bjz[j]
-   proz=RZ(1);        
-   for j in 1:m
-       proz=proz*var_z[j];
-   end
-
-   for j in 1:length(u)-1 
-       
-           if u[j]==0
-               bj=0;
-               hj=0;
-           else
-              #e=j-invP;
-               g=proz*u[j];
-               bj, hj = reduce_with_quotients(g, [var_z[j]], ordering = invlex(RZ));
-           end
-           push!(v,bj[1]);
-           
-       
-   end
-
-   #Compute Baikov identity associated to generator vecG[i]
-   ##---1---compute m1= (\sum_{i=1}^{m}\frac{\partial a_i}{\partial z_i}
-   m1=RZ(0);
-   for j in 1:m 
-     m1=m1+derivative(u[j],length(var_t)+j);
-   end
-   
-   ##---2---compute m3=\sum_{i=1}^{m} \frac{\nu_i a_i}{z_i}
-   m2=RZ(0);
-   for j in 1:m 
-       m2=m2+RZ(Nu[j])*v[j];
-   end
-   
-   M=(m1-RZ((D-L-E-1)//2)*u[m+1])*proz-m2;
-   #Since we multiplied the expression by prod_z, we have to add 1 to each ν_{i}, in the denominator
-   
-   single_IBP=[];
-   for j in 1:length(M) 
-       degT=degrees(monomial(M,j));
-       deg_t=first(degT,length(var_t));
-       deg_z=last(degT,length(var_z));
-       cTerm=RZ(1);
-       for l in 1:length(var_t)
-          cTerm=cTerm*var_t[l]^deg_t[l];
-       end
-       cTerm=cTerm*coeff(M,j);
-       iTerm=deg_z-Nu;
-       #Since we multiplied the expression by prod_z, 
-       for l in 1:length(iTerm) 
-           iTerm[l]=iTerm[l]-1;
-       end
-       push!(single_IBP,[cTerm,iTerm]);
-
-   end
-   if single_IBP!=[]
-       push!(set_IBP,single_IBP);   
-   end
-
-
-end
-
- 
-return set_IBP;
-end
-
-@doc raw"""
-printIBP(set_IBP::Vector{Vector{}},n::Int64)
-USAGE:  printIBP(single_IBP,n); 
-"""
-function printIBP(set_IBP::Vector,n::Int64)
-    
-    if n>length(set_IBP)
-        error("N must be less or equal to number of IBP identities")
-    end
-    println("First ",n," IBP identities associated to G setting ν_1=...=ν_k=1 and ν_{k+1}<=0,...,ν_m<=0 (Total number of relations=",length(set_IBP),"):")
-   
-    for j in 1:n
-        ve=set_IBP[j]
-        ev=[];
-    for i in 1:length(ve) 
-        t1=join(repr.(ve[i][2]),",");
-        t=string(string(ve[i][1]),string("G("),t1,string(")"));
-        push!(ev,t);
-    end
-    println('0','=',join(ev,"+")); 
-     println();   
-    end
+    return t;
 end
