@@ -30,6 +30,10 @@ export Net
 export simple_graph
 export labeledgraph
 export computeM1
+export enumerateTerms
+export Heviside
+export IBP
+export power_monomials
  include("Functions.jl")
  #include("DataTypes.jl")
 # Write your package code here.

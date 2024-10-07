@@ -21,12 +21,15 @@ export removeVariableLocal
 export computeIBP
 export printIBP
 export computeM1
+export enumerateTerms
+export Heviside
+export power_monomials
 #----------------------------------
 export sample1
 export Net
 export simple_graph
 export labeledgraph
-
+export IBP
 mutable struct sample1
     a::Int
 end
@@ -51,6 +54,14 @@ mutable struct labeledgraph
     baikovover :: Ring
     baikovmatrix :: Matrix{RingElem}
 end
+
+mutable struct IBP
+    baikovind::Vector
+    baikovover::Ring
+    paraind::Int64
+    setIBP::Vector
+end
+
 #----------------------------------
 
 
@@ -1600,7 +1611,7 @@ function computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool
         end
     end
  
-return set_IBP;
+return IBP(Nu,RZ,length(v1),set_IBP);
 end
 
 @doc raw"""
@@ -1732,4 +1743,42 @@ function computeM1(G::labeledgraph)
    
     end
     return t;
+end
+
+function enumerateTerms(sets)
+    if isempty(sets)
+        return [()]
+    end
+    first_set=sets[1];
+    rest_sets=sets[2:end];
+    rest_product=enumerateTerms(rest_sets);
+    result=[];
+    for elim in first_set
+        for combo in rest_product 
+            push!(result,(elim,combo...));
+        end
+    end
+        return result;
+
+end
+function Heviside(x)
+    if x>=0
+        return 1;
+    else
+        return 0;
+        
+    end
+end
+
+function power_monomials(nvar::Int64,deg::Int64)
+    if nvar==1
+        return [[deg]];        
+    end
+    vecPower=[];
+    for i in 0:deg 
+        for j in power_monomials(nvar-1,deg-i) 
+            push!(vecPower,[i;j])
+        end
+    end
+    return vecPower
 end
