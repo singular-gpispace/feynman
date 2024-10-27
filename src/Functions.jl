@@ -24,6 +24,7 @@ export computeM1
 export enumerateTerms
 export Heviside
 export power_monomials
+export generating_probes
 #----------------------------------
 export sample1
 export Net
@@ -1781,4 +1782,47 @@ function power_monomials(nvar::Int64,deg::Int64)
         end
     end
     return vecPower
+end
+
+function generating_probes(R::Ring,P::Int64,common_factors::Vector,w::Vector,t::Int64)
+    p=P;
+    R1,_= QadicField(ZZ(p), 1,30);
+    Qx, x = QQ["x"];
+
+    vars=gens(R);
+X=matrix_space(QQ,length(common_factors),length(vars));
+x=Matrix(zero_matrix(QQ,length(common_factors),length(vars)))
+for i in 1:length(common_factors) 
+    f=common_factors[i];
+    while f!=0
+        for j in 1:length(vars) 
+            if leading_monomial(f)==vars[j]
+                x[i,j]=leading_coefficient(f)#R1(leading_coefficient(f));
+                   
+            end
+        end   
+        f=tail(f); 
+    end
+    
+end
+
+x=X(x)
+C=matrix_space(QQ,length(common_factors),1);
+c=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
+d=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
+#P=Int64(101)
+for i in 1:length(w) 
+    l=rand(1:t)//rand(1:(t-1000))
+    x1=R1(l)+O(R1,P^w[i]);
+    p= l-lift(Qx, R1(x1));
+    c[i,1]=coeff(p,0);
+    #c[i,1]=p#x1;
+    d[i,1]=coeff(lift(Qx, R1(x1)),0);
+
+end
+c=C(c)
+d=C(d)
+prob1=Matrix(inv(x)*c)
+prob2=Matrix(inv(x)*d)
+return prob1,prob2
 end

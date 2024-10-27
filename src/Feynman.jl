@@ -34,6 +34,7 @@ export enumerateTerms
 export Heviside
 export IBP
 export power_monomials
+export generating_probes
  include("Functions.jl")
  #include("DataTypes.jl")
 # Write your package code here.
