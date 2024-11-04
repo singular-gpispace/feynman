@@ -25,6 +25,13 @@ export enumerateTerms
 export Heviside
 export power_monomials
 export generating_probes
+export oneRR
+export manyRR
+export pickDen
+export evaluateBB
+export pickWeights
+export numeratorAnsatz
+export interpolateAnsatz
 #----------------------------------
 export sample1
 export Net
@@ -1812,11 +1819,25 @@ c=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
 d=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
 #P=Int64(101)
 for i in 1:length(w) 
-    l=rand(1:t)//rand(1:(t-1000))
-    x1=R1(l)+O(R1,P^w[i]);
+    l1=rand(1:(t*1000));
+    l=rand(1:t)//l1;
+    x1=R1(l)+O(R1,P^w[i]); 
     p= l-lift(Qx, R1(x1));
-    c[i,1]=coeff(p,0);
-    #c[i,1]=p#x1;
+    l2=coeff(p,0);
+    l3=coeff(lift(Qx, R1(x1)),0);
+    while denominator(l2)%P==0 #&& denominator(l3)%P==0 
+        l1=rand(1:(t*1000));
+        l=rand(1:t)//l1;
+    x1=R1(l)+O(R1,P^w[i]); 
+    p= l-lift(Qx, R1(x1));
+    l2=coeff(p,0);
+    l3=coeff(lift(Qx, R1(x1)),0);
+    end
+    #l=rand(1:t)//l1;
+    #x1=R1(l)+O(R1,P^w[i]); 
+    #p= l-lift(Qx, R1(x1));
+    #c[i,1]=coeff(p,0);
+    c[i,1]=l2;
     d[i,1]=coeff(lift(Qx, R1(x1)),0);
 
 end
@@ -1825,4 +1846,275 @@ d=C(d)
 prob1=Matrix(inv(x)*c)
 prob2=Matrix(inv(x)*d)
 return prob1,prob2
+end
+
+function oneRR(r::Int64,m::Int64)
+u=[1,0,m];
+v=[0,1,r];
+while v[3]>=sqrt(m/2)
+    q=floor(u[3]//v[3]);
+    r=u-q*v;
+    u=v;
+    v=r;
+end
+
+if abs(v[2])>sqrt(m/2)
+    throw(error("given m and r doesn't satisfy the condition in Wang algorithm"));
+end
+return([v[3],v[2]]);
+end
+
+function manyRR(ri::Vector,mi::Vector)
+    m=1;
+for i in 1:length(mi) 
+    m=m*mi[i];
+end
+c=crt(ri,mi);
+return(oneRR(c,m));
+end
+
+function pickDen(R::Ring,R1::Field,p::Int,common_factors::Vector,w::Vector,candidate_den::Vector,nProbes::Int )
+    i=0;
+    d=0;
+    m=0;
+    pr=[];
+    pr_2=[];
+   while i<nProbes 
+       prob1,prob2=generating_probes(R,p,common_factors,w,rand(10000:1000000));
+       p1=prob1[1,1]
+       q1=prob1[2,1]
+       r1=prob1[3,1]
+       p2=prob2[1,1]
+       q2=prob2[2,1]
+       r2=prob2[3,1]
+       pw=[];
+       for j in 1:length(candidate_den) 
+           a=evaluate(candidate_den[j],[p1,q1,r1]) 
+           push!(pw,valuation(R1(a)))
+       end
+   
+       if length(findall(x->x==pw[argmax(pw)],pw))==1 #&& evaluate(f,[p2,q2,r2])!=0
+           
+           push!(pr,[p1,q1,r1]);
+           push!(pr_2,[p2,q2,r2]);
+           d=candidate_den[findall(x->x==pw[argmax(pw)],pw)[1]];
+           print(d)
+           m=valuation(R1(evaluate(d,[p1,q1,r1])))
+               i=i+1;
+       end
+       
+   end
+   return([pr,pr_2,d,m]); #this depend on candidate den need to change when  candidate den is changes
+end
+
+
+function evaluateBB(p::Vector,v::Vector)
+    a=evaluate(p[1],v); 
+    b=evaluate(p[2],v);
+    return(a/b);
+end
+
+function pickWeights(R::Ring,R1::Field,p::Int,BB::Vector,common_den::Vector,candidate_w::Vector,exp_vec::Vector,computed_den::Vector,computed_num)
+    #extracting terms
+    common_factors=Vector{typeof(R(1))}(undef,0);
+    candidate_den=[];
+    for i in 1:length(common_den) 
+        push!(common_factors,R(common_den[i][1]))
+    end
+    for i in 1:length(exp_vec) 
+        #toDo write a function to obtain the correspoding denominator 
+        push!(candidate_den,common_den[1][1]^exp_vec[i][1]*common_den[2][1]^exp_vec[i][2]*common_den[3][1]^exp_vec[i][3]);
+    end
+    trimmed_w=[];
+    d_i=[];
+    W_i=[];
+    f=BB[2];
+    for i in 1:length(candidate_w) 
+        w=candidate_w[i];
+        W=[];
+        for i in 1:length(exp_vec) 
+        #toDo write a function to obtain the correspoding denominator 
+            e=0;
+            for j in 1:length(exp_vec[i]) 
+                e=e+w[j]*exp_vec[i][j]
+            end
+        #push!(W,w[1]*exp_vec[i][1]+w[2]*exp_vec[i][2]+w[3]*exp_vec[i][3]);
+            push!(W,e);
+        end
+        prob1,prob2=generating_probes(R,p,common_factors,w,rand(1000:10000));
+        p1=prob1[1,1];
+        q1=prob1[2,1];
+        r1=prob1[3,1];
+        a=evaluateBB(BB,[p1,q1,r1]); 
+        b=evaluate(f,[p1,q1,r1]);
+    
+        while valuation(R1(b))==0
+            prob1,prob2=generating_probes(R,p,common_factors,w,rand(1000:10000));
+            p1=prob1[1,1];
+            q1=prob1[2,1];
+            r1=prob1[3,1];
+            a=evaluateBB(BB,[p1,q1,r1]);
+            b=evaluate(f,[p1,q1,r1]);
+        end
+    
+        constructed_term=0;
+        if length(computed_den)!=0
+            for k in 1:length(computed_den) 
+                constructed_term=constructed_term+R1(evaluate(computed_num[k],[p1,q1,r1])/evaluate(computed_den[k],[p1,q1,r1]) )
+            end    
+        end
+    
+        R_w=valuation(R1(a-constructed_term))
+        d_i=[];
+        W_i=[];
+        for i in 1:length(exp_vec) 
+            lhs=0;
+            v1=[];
+            v2=[];
+            for j in 1:length(w) 
+                lhs=lhs-exp_vec[i][j]*w[j];
+                if exp_vec[i][j]!=0
+                    push!(v1,common_den[j][1]);
+                end
+                if exp_vec[i][j]!=0 || w[j]!=0
+                    push!(v2,common_den[j][1]);
+                end
+            end    
+            I1=ideal(R,v1);
+            I2=ideal(R,v2);
+            println(lhs);
+            if R_w>lhs && I1==I2
+                continue;
+            else
+                push!(d_i,candidate_den[i]);
+                push!(W_i,W[i])
+            end
+    
+        end
+        if length(findall(x->x==W_i[argmin(W_i)],W_i))==1
+            d=d_i[argmin(W_i)];
+            m=W_i[argmin(W_i)];
+            push!(trimmed_w,[w,d,m]);
+        end        
+end #loop only changes when p and computed den/num changes. Does not depend on candidate den
+
+return(trimmed_w);
+end
+
+
+function numeratorAnsatz(R::Ring,m)
+tot_var=gens(R);
+resid_var=[];
+n=[];
+deg_vec=power_monomials(length(tot_var),total_degree(m));
+resid_var=tot_var
+for i in 0:length(deg_vec) 
+    temp=R(1);
+    if i==0
+        continue
+        #push!(n,temp);
+    else
+        for j in 1:length(deg_vec[i]) 
+            temp=temp*resid_var[j]^deg_vec[i][j];
+        end
+        push!(n,temp);
+    end
+end
+
+return(n);
+
+end
+
+function interpolateAnsatz(R::Ring,p1::Int,n::Vector,BB::Vector,q::Vector)
+    pr=q[1];
+    pr_2=q[2];
+    m=q[4];
+    d=q[3];
+    F=GF(p1);
+   
+    R1,_= QadicField(ZZ(p1), 1,30);
+    Qx, x = QQ["x"];
+
+B=matrix_space(R1,length(n),1);
+A=matrix_space(R1,length(n),length(n));
+a=Matrix{typeof(R1(1))}(undef,length(n),length(n));
+b=Matrix{typeof(R1(1))}(undef,length(n),1);
+
+## We have w, d and n. We generate as many x as length(n) for satisfy (4) for a given fixed prime p
+B_F=matrix_space(QQ,length(n),1);
+A_F=matrix_space(QQ,length(n),length(n));
+a_F=Matrix{typeof(QQ(1))}(undef,length(n),length(n));
+b_F=Matrix{typeof(QQ(1))}(undef,length(n),1);
+
+B_Q=matrix_space(F,length(n),1);
+A_Q=matrix_space(F,length(n),length(n));
+a_Q=Matrix{typeof(F(1))}(undef,length(n),length(n));
+b_Q=Matrix{typeof(F(1))}(undef,length(n),1);
+for i in 1:length(n)
+    p=pr[i+8][1];
+    q=pr[i+8][2];
+    r=pr[i+8][3];
+
+    p2=pr_2[i+8][1];
+    q2=pr_2[i+8][2];
+    r2=pr_2[i+8][3];
+    
+    b[i,1]=R1(evaluateBB(BB,[p,q,r]))+O(R1,p1^(m-1));
+    b_F[i,1]=coeff(lift(Qx,R1(evaluateBB(BB,[p,q,r])+O(R1,p1^(m-1)))),0);
+   # b_Q[i,1]=F(numerator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0))*
+   #print(F(denominator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0))))
+   de=denominator(b_F[i,1]);
+   nu=numerator(b_F[i,1]);
+   if F(de)==0
+    b_Q[i,1]=F(0);
+   else
+    de=1/F(de);
+    b_Q[i,1]=F(de*nu);
+   end
+    #b_Q[i,1]=1/F(denominator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0)))
+    for j in 1:length(n) 
+       a[i,j]=R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1));
+        a_F[i,j]=coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0);
+       # a[i,j]=R1(evaluate(n[j],[p,q,r]))+O(R1,p1^(m-1));
+       # a_F[i,j]=coeff(lift(Qx,R1(evaluate(n[j],[p,q,r]))+O(R1,p1^(m-1))),0);
+       de=denominator(a_F[i,j]);
+       nu=numerator(a_F[i,j]);
+       if F(de)==0
+        a_Q[i,j]=F(0);
+       else
+        de=1/F(de);
+        a_Q[i,j]=F(nu*de);
+       end
+    #    a_Q[i,j]=F(numerator(coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0))*1/F(denominator(coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0))));
+    end 
+    
+end
+a=A(a);
+b=B(b);
+a_F=A_F(a_F);
+b_F=B_F(b_F);
+
+a_Q=A_Q(a_Q);
+b_Q=B_Q(b_Q);
+if det(a_F)==0
+    error("Try again with different probes");
+else
+    inc=inv(a_F)*b_F;
+    c=[];
+    for i in 1:length(n) 
+        #a=(inv(a_F)*b_F)[i];
+        #de=denominator(inc[i]);
+        
+        if F(denominator(inc[i]))==0
+            error("Try again with different probes");
+        #    println([F(a),0])
+        else
+        #    nu=1/F(numerator(a));
+        #    println([F(a),F(de*nu)])
+        push!(c,F(inc[i]))
+        end
+        #push!(c,F(inc[i]))
+    end    
+    return(c);
+end
 end

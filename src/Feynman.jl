@@ -35,6 +35,13 @@ export Heviside
 export IBP
 export power_monomials
 export generating_probes
+export oneRR
+export manyRR
+export pickDen
+export evaluateBB
+export pickWeights
+export numeratorAnsatz
+export interpolateAnsatz
  include("Functions.jl")
  #include("DataTypes.jl")
 # Write your package code here.
