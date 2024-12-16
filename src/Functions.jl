@@ -32,6 +32,12 @@ export evaluateBB
 export pickWeights
 export numeratorAnsatz
 export interpolateAnsatz
+export getWeights
+export setBB
+export getCandidateDenominators
+export getIndDen
+export interpolateAnsatzTemp
+export computeCoef
 #----------------------------------
 export sample1
 export Net
@@ -1482,13 +1488,13 @@ function computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool
 
     M2=Singular.Module(T,gens_M2...);
   
-    if showGens
-    println("Generators of M1 are:");
+ #=   if showGens
+ #   println("Generators of M1 are:");
     printNet(gens_M1);
     println("Generators of M2 are:");
     printNet(gens_M2);
    end
-    
+   =# 
 ##-------------------Compute Module intersection------------------------------------------# 
     G=Singular.intersection(M1,M2);
     G=Singular.std(G,complete_reduction=true);
@@ -1791,61 +1797,210 @@ function power_monomials(nvar::Int64,deg::Int64)
     return vecPower
 end
 
-function generating_probes(R::Ring,P::Int64,common_factors::Vector,w::Vector,t::Int64)
+function getIndDen(R::Ring,common_factors::Vector)
+    n=nvars(R);
+    vars=gens(R);
+  #  common_factors=Vector{typeof(R(1))}(undef,0);
+  #  for i in 1:length(common_den) 
+  #      push!(common_factors,R(common_den[i][1]));
+  #  end
+
+    X=matrix_space(QQ,length(common_factors),length(vars));
+    x=Matrix(zero_matrix(QQ,length(common_factors),length(vars)));
+    for i in 1:length(common_factors) 
+        f=common_factors[i];
+        while f!=0
+            for j in 1:length(vars) 
+                if leading_monomial(f)==vars[j]
+                    x[i,j]=leading_coefficient(f);#R1(leading_coefficient(f));
+                end
+            end   
+            f=tail(f); 
+        end
+    end
+    x=X(x);
+    r, P, L, U = lu(x);
+    ind_den=[];
+    ind_w=[];
+    if r<=length(vars)
+        for i in 1:r 
+            push!(ind_den,common_factors[P[i]]);
+            push!(ind_w,P[i]);
+        end
+    end
+    if r<n 
+        x=x[1:r,:];
+        nl, N = nullspace(x);
+        for j in 1:(n-r)#(size(N))[2]   #applying rank-nullity theorem 
+            f=0;
+            for k in 1:length(vars) 
+               f=f+N[k,j]*vars[k]; 
+            end
+            push!(ind_den,f);
+        end
+    end
+ 
+    if r>n
+        error("Something is wrong in the denominators provided");        
+    end
+    return(ind_den,ind_w);
+end
+
+function generating_probes(R::Ring,P::Int64,common_factors::Vector,w1::Vector,t::Int64)
+ CF=common_factors;
     p=P;
     R1,_= QadicField(ZZ(p), 1,30);
     Qx, x = QQ["x"];
-
-    vars=gens(R);
-X=matrix_space(QQ,length(common_factors),length(vars));
-x=Matrix(zero_matrix(QQ,length(common_factors),length(vars)))
-for i in 1:length(common_factors) 
-    f=common_factors[i];
-    while f!=0
-        for j in 1:length(vars) 
-            if leading_monomial(f)==vars[j]
-                x[i,j]=leading_coefficient(f)#R1(leading_coefficient(f));
-                   
-            end
-        end   
-        f=tail(f); 
+F=GF(P);
+Qx, x = QQ["x"];
+vars=gens(R);
+common_factors,i_w=getIndDen(R,common_factors);
+#---------------------------------------------------------
+    w=Vector{typeof(1)}(undef,length(vars));
+    for i in 1: length(vars)
+        w[i]=w1[i]#rand(0:8)
     end
+    for i in 1:length(i_w)
+        w[i]= w1[i_w[i]];
+    end
+    #undef_indices=findall(x->x===nothing || x ===missing,w);
+    #for i in 1:length(undef_indices) 
+    #    w[undef_indices[i]]=rand(0:4);
+    #end
+    X=matrix_space(QQ,length(common_factors),length(vars));
+    x=Matrix(zero_matrix(QQ,length(common_factors),length(vars)))
     
-end
+    for i in 1:length(common_factors) 
+        f=common_factors[i];
+        while f!=0
+            for j in 1:length(vars) 
+                if leading_monomial(f)==vars[j]
+                    x[i,j]=leading_coefficient(f)#R1(leading_coefficient(f));                   
+                end
+            end   
+            f=tail(f); 
+        end
+    end
+    x=X(x);
+    C=matrix_space(QQ,length(common_factors),1);
+    c=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
+    d=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
+    #P=Int64(101)
 
-x=X(x)
-C=matrix_space(QQ,length(common_factors),1);
-c=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
-d=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
-#P=Int64(101)
-for i in 1:length(w) 
-    l1=rand(1:(t*1000));
-    l=rand(1:t)//l1;
-    x1=R1(l)+O(R1,P^w[i]); 
-    p= l-lift(Qx, R1(x1));
-    l2=coeff(p,0);
-    l3=coeff(lift(Qx, R1(x1)),0);
-    while denominator(l2)%P==0 #&& denominator(l3)%P==0 
+    for i in 1:length(common_factors) 
         l1=rand(1:(t*1000));
         l=rand(1:t)//l1;
-    x1=R1(l)+O(R1,P^w[i]); 
-    p= l-lift(Qx, R1(x1));
-    l2=coeff(p,0);
-    l3=coeff(lift(Qx, R1(x1)),0);
-    end
+        x1=R1(l)+O(R1,P^w[i]); 
+        p= l-lift(Qx, R1(x1));
+        l2=coeff(p,0);
+        l3=coeff(lift(Qx, R1(x1)),0);
+        while denominator(l2)%P==0 #&& denominator(l3)%P==0 
+            l1=rand(1:(t*1000));
+            l=rand(1:t)//l1;
+            x1=R1(l)+O(R1,P^w[i]); 
+            p= l-lift(Qx, R1(x1));
+            l2=coeff(p,0);
+            l3=coeff(lift(Qx, R1(x1)),0);
+        end
     #l=rand(1:t)//l1;
     #x1=R1(l)+O(R1,P^w[i]); 
     #p= l-lift(Qx, R1(x1));
     #c[i,1]=coeff(p,0);
-    c[i,1]=l2;
-    d[i,1]=coeff(lift(Qx, R1(x1)),0);
+        c[i,1]=l2;
+        d[i,1]=coeff(lift(Qx, R1(x1)),0);
+    end
+    c=C(c)
+    d=C(d)
+    prob1=Matrix(inv(x)*c)
+    prob2=Matrix(inv(x)*d)
+    e1=prob1[1,1]
+    e2=prob1[2,1]
+    e3=prob1[3,1]
 
-end
-c=C(c)
-d=C(d)
-prob1=Matrix(inv(x)*c)
-prob2=Matrix(inv(x)*d)
-return prob1,prob2
+#=    CF=common_factors;
+    p=P;
+    R1,_= QadicField(ZZ(p), 1,30);
+    Qx, x = QQ["x"];
+    common_factors,i_w=getIndDen(R,common_factors);
+    vars=gens(R);
+    w=Vector{typeof(1)}(undef,length(vars));
+    for i in 1:length(i_w)
+        w[i]= w1[i_w[i]];
+        #if i<=length(i_w)
+         #   push!(w,w1[i_w[i]]);
+        #else
+         #   push!(w,rand(0:4));
+        #end
+    end
+    
+    undef_indices=findall(x->x===nothing || x ===missing,w);
+    
+    for i in 1:length(undef_indices) 
+        w[undef_indices[i]]=rand(0:4);
+    end
+
+    X=matrix_space(QQ,length(common_factors),length(vars));
+    x=Matrix(zero_matrix(QQ,length(common_factors),length(vars)))
+    
+    for i in 1:length(common_factors) 
+        f=common_factors[i];
+        while f!=0
+            for j in 1:length(vars) 
+                if leading_monomial(f)==vars[j]
+                    x[i,j]=leading_coefficient(f)#R1(leading_coefficient(f));                   
+                end
+            end   
+            f=tail(f); 
+        end
+    end
+    x=X(x);
+    C=matrix_space(QQ,length(common_factors),1);
+    c=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
+    d=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
+    #P=Int64(101)
+
+    for i in 1:length(common_factors) 
+        l1=rand(1:(t*1000));
+        l=rand(1:t)//l1;
+        x1=R1(l)+O(R1,P^w[i]); 
+        p= l-lift(Qx, R1(x1));
+        l2=coeff(p,0);
+        l3=coeff(lift(Qx, R1(x1)),0);
+        while denominator(l2)%P==0 #&& denominator(l3)%P==0 
+            l1=rand(1:(t*1000));
+            l=rand(1:t)//l1;
+            x1=R1(l)+O(R1,P^w[i]); 
+            p= l-lift(Qx, R1(x1));
+            l2=coeff(p,0);
+            l3=coeff(lift(Qx, R1(x1)),0);
+        end
+    #l=rand(1:t)//l1;
+    #x1=R1(l)+O(R1,P^w[i]); 
+    #p= l-lift(Qx, R1(x1));
+    #c[i,1]=coeff(p,0);
+        c[i,1]=l2;
+        d[i,1]=coeff(lift(Qx, R1(x1)),0);
+    end
+    c=C(c)
+    d=C(d)
+    prob1=Matrix(inv(x)*c)
+    prob2=Matrix(inv(x)*d)
+    =#
+    w_l=[]
+    f=prob1[1,1]
+    g=prob1[2,1]
+    h=prob1[3,1]
+    for k in 1:length(CF) 
+        push!(w_l,valuation(R1(evaluate(CF[k],[f,g,h]))))
+    end
+
+    if w_l==w1
+        return prob1,prob2 ;
+    else
+        return generating_probes(R,P,CF,w1,t);   
+    end
+
+#return prob1,prob2;
 end
 
 function oneRR(r::Int64,m::Int64)
@@ -1873,12 +2028,13 @@ c=crt(ri,mi);
 return(oneRR(c,m));
 end
 
-function pickDen(R::Ring,R1::Field,p::Int,common_factors::Vector,w::Vector,candidate_den::Vector,nProbes::Int )
+function pickDen(R::Ring,R1::Field,common_factors::Vector,w::Vector,candidate_den::Vector,nProbes::Int )
     i=0;
     d=0;
     m=0;
     pr=[];
     pr_2=[];
+    p=Int(prime(R1));
    while i<nProbes 
        prob1,prob2=generating_probes(R,p,common_factors,w,rand(10000:1000000));
        p1=prob1[1,1]
@@ -1892,13 +2048,13 @@ function pickDen(R::Ring,R1::Field,p::Int,common_factors::Vector,w::Vector,candi
            a=evaluate(candidate_den[j],[p1,q1,r1]) 
            push!(pw,valuation(R1(a)))
        end
-   
-       if length(findall(x->x==pw[argmax(pw)],pw))==1 #&& evaluate(f,[p2,q2,r2])!=0
+       d=candidate_den[findall(x->x==pw[argmax(pw)],pw)[1]];
+       if length(findall(x->x==pw[argmax(pw)],pw))<=length(gens(R)) #&& valuation(R1(evaluate(d,[p1,q1,r1])))!=0#<=length(gens(R)) #&& evaluate(f,[p2,q2,r2])!=0
            
            push!(pr,[p1,q1,r1]);
            push!(pr_2,[p2,q2,r2]);
            d=candidate_den[findall(x->x==pw[argmax(pw)],pw)[1]];
-           print(d)
+           #print(d)
            m=valuation(R1(evaluate(d,[p1,q1,r1])))
                i=i+1;
        end
@@ -1914,16 +2070,21 @@ function evaluateBB(p::Vector,v::Vector)
     return(a/b);
 end
 
-function pickWeights(R::Ring,R1::Field,p::Int,BB::Vector,common_den::Vector,candidate_w::Vector,exp_vec::Vector,computed_den::Vector,computed_num)
+function pickWeights(R::Ring,R1::Field,BB::Vector,common_den::Vector,candidate_w::Vector,exp_vec::Vector,computed_den::Vector,computed_num)
     #extracting terms
+    p=Int(prime(R1));
     common_factors=Vector{typeof(R(1))}(undef,0);
     candidate_den=[];
     for i in 1:length(common_den) 
         push!(common_factors,R(common_den[i][1]))
     end
+    q8,q9=getIndDen(R,common_factors);
     for i in 1:length(exp_vec) 
-        #toDo write a function to obtain the correspoding denominator 
-        push!(candidate_den,common_den[1][1]^exp_vec[i][1]*common_den[2][1]^exp_vec[i][2]*common_den[3][1]^exp_vec[i][3]);
+        c=1;
+        for j in 1:length(common_factors) 
+            c=c*common_factors[j]^exp_vec[i][j];
+        end 
+        push!(candidate_den,c);
     end
     trimmed_w=[];
     d_i=[];
@@ -1931,20 +2092,22 @@ function pickWeights(R::Ring,R1::Field,p::Int,BB::Vector,common_den::Vector,cand
     f=BB[2];
     for i in 1:length(candidate_w) 
         w=candidate_w[i];
-        W=[];
+        W=[];#these are weights of candidate denominators
+        prob1,prob2=generating_probes(R,p,common_factors,w,rand(1000:10000));
+        p1=prob1[1,1];
+        q1=prob1[2,1];
+        r1=prob1[3,1];
         for i in 1:length(exp_vec) 
         #toDo write a function to obtain the correspoding denominator 
             e=0;
             for j in 1:length(exp_vec[i]) 
+             #   e=e+valuation(R1(evaluate(common_den[j][1],[p1,q1,r1])))*exp_vec[i][j];
                 e=e+w[j]*exp_vec[i][j]
             end
         #push!(W,w[1]*exp_vec[i][1]+w[2]*exp_vec[i][2]+w[3]*exp_vec[i][3]);
             push!(W,e);
         end
-        prob1,prob2=generating_probes(R,p,common_factors,w,rand(1000:10000));
-        p1=prob1[1,1];
-        q1=prob1[2,1];
-        r1=prob1[3,1];
+        
         a=evaluateBB(BB,[p1,q1,r1]); 
         b=evaluate(f,[p1,q1,r1]);
     
@@ -1973,10 +2136,12 @@ function pickWeights(R::Ring,R1::Field,p::Int,BB::Vector,common_den::Vector,cand
             v2=[];
             for j in 1:length(w) 
                 lhs=lhs-exp_vec[i][j]*w[j];
+                # lhs=lhs-valuation(R1(evaluate(common_den[j][1],[p1,q1,r1])))*exp_vec[i][j];
                 if exp_vec[i][j]!=0
                     push!(v1,common_den[j][1]);
                 end
                 if exp_vec[i][j]!=0 || w[j]!=0
+                #if exp_vec[i][j]!=0 || valuation(R1(evaluate(common_den[j][1],[p1,q1,r1])))!=0
                     push!(v2,common_den[j][1]);
                 end
             end    
@@ -1991,9 +2156,10 @@ function pickWeights(R::Ring,R1::Field,p::Int,BB::Vector,common_den::Vector,cand
             end
     
         end
-        if length(findall(x->x==W_i[argmin(W_i)],W_i))==1
-            d=d_i[argmin(W_i)];
-            m=W_i[argmin(W_i)];
+        println(W_i)
+        if length(findall(x->x==W_i[argmax(W_i)],W_i)) <=length(gens(R))
+            d=d_i[argmax(W_i)];
+            m=W_i[argmax(W_i)];
             push!(trimmed_w,[w,d,m]);
         end        
 end #loop only changes when p and computed den/num changes. Does not depend on candidate den
@@ -2025,7 +2191,17 @@ return(n);
 
 end
 
-function interpolateAnsatz(R::Ring,p1::Int,n::Vector,BB::Vector,q::Vector)
+function interpolateAnsatzTemp(R::Ring,p1::Int,n::Vector,BB::Vector,q::Vector,computed_den::Vector,computed_num::Vector)
+ try
+    return interpolateAnsatz(R::Ring,p1::Int,n::Vector,BB::Vector,q::Vector,computed_den::Vector,computed_num::Vector)
+ catch
+    return nothing
+ end   
+end
+
+
+function interpolateAnsatz(R::Ring,p1::Int,n::Vector,BB::Vector,q::Vector,computed_den::Vector,computed_num::Vector)
+    U=q;
     pr=q[1];
     pr_2=q[2];
     m=q[4];
@@ -2035,57 +2211,63 @@ function interpolateAnsatz(R::Ring,p1::Int,n::Vector,BB::Vector,q::Vector)
     R1,_= QadicField(ZZ(p1), 1,30);
     Qx, x = QQ["x"];
 
-B=matrix_space(R1,length(n),1);
-A=matrix_space(R1,length(n),length(n));
-a=Matrix{typeof(R1(1))}(undef,length(n),length(n));
-b=Matrix{typeof(R1(1))}(undef,length(n),1);
+    B=matrix_space(R1,length(n),1);
+    A=matrix_space(R1,length(n),length(n));
+    a=Matrix{typeof(R1(1))}(undef,length(n),length(n));
+    b=Matrix{typeof(R1(1))}(undef,length(n),1);
 
-## We have w, d and n. We generate as many x as length(n) for satisfy (4) for a given fixed prime p
-B_F=matrix_space(QQ,length(n),1);
-A_F=matrix_space(QQ,length(n),length(n));
-a_F=Matrix{typeof(QQ(1))}(undef,length(n),length(n));
-b_F=Matrix{typeof(QQ(1))}(undef,length(n),1);
+    ## We have w, d and n. We generate as many x as length(n) for satisfy (4) for a given fixed prime p
+    B_F=matrix_space(QQ,length(n),1);
+    A_F=matrix_space(QQ,length(n),length(n));
+    a_F=Matrix{typeof(QQ(1))}(undef,length(n),length(n));
+    b_F=Matrix{typeof(QQ(1))}(undef,length(n),1);
 
-B_Q=matrix_space(F,length(n),1);
-A_Q=matrix_space(F,length(n),length(n));
-a_Q=Matrix{typeof(F(1))}(undef,length(n),length(n));
-b_Q=Matrix{typeof(F(1))}(undef,length(n),1);
-for i in 1:length(n)
-    p=pr[i+8][1];
-    q=pr[i+8][2];
-    r=pr[i+8][3];
+    B_Q=matrix_space(F,length(n),1);
+    A_Q=matrix_space(F,length(n),length(n));
+    a_Q=Matrix{typeof(F(1))}(undef,length(n),length(n));
+    b_Q=Matrix{typeof(F(1))}(undef,length(n),1);
+    for i in 1:length(n)
+        p=pr[i+8][1];
+        q=pr[i+8][2];
+        r=pr[i+8][3];
 
-    p2=pr_2[i+8][1];
-    q2=pr_2[i+8][2];
-    r2=pr_2[i+8][3];
+        p2=pr_2[i+8][1];
+        q2=pr_2[i+8][2];
+        r2=pr_2[i+8][3];
+        constructed_term=0;
+            if length(computed_den)!=0
+                for k in 1:length(computed_den) 
+                    constructed_term=constructed_term+(evaluate(computed_num[k],[p,q,r])/evaluate(computed_den[k],[p,q,r]) )
+                end    
+            end
     
-    b[i,1]=R1(evaluateBB(BB,[p,q,r]))+O(R1,p1^(m-1));
-    b_F[i,1]=coeff(lift(Qx,R1(evaluateBB(BB,[p,q,r])+O(R1,p1^(m-1)))),0);
-   # b_Q[i,1]=F(numerator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0))*
-   #print(F(denominator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0))))
-   de=denominator(b_F[i,1]);
-   nu=numerator(b_F[i,1]);
-   if F(de)==0
-    b_Q[i,1]=F(0);
-   else
-    de=1/F(de);
-    b_Q[i,1]=F(de*nu);
-   end
-    #b_Q[i,1]=1/F(denominator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0)))
-    for j in 1:length(n) 
-       a[i,j]=R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1));
-        a_F[i,j]=coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0);
-       # a[i,j]=R1(evaluate(n[j],[p,q,r]))+O(R1,p1^(m-1));
-       # a_F[i,j]=coeff(lift(Qx,R1(evaluate(n[j],[p,q,r]))+O(R1,p1^(m-1))),0);
-       de=denominator(a_F[i,j]);
-       nu=numerator(a_F[i,j]);
-       if F(de)==0
-        a_Q[i,j]=F(0);
-       else
-        de=1/F(de);
-        a_Q[i,j]=F(nu*de);
-       end
-    #    a_Q[i,j]=F(numerator(coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0))*1/F(denominator(coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0))));
+        b[i,1]=R1(evaluateBB(BB,[p,q,r])-constructed_term)+O(R1,p1^(m-1));
+        b_F[i,1]=coeff(lift(Qx,R1(evaluateBB(BB,[p,q,r])-constructed_term+O(R1,p1^(m-1)))),0);
+        # b_Q[i,1]=F(numerator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0))*
+        #print(F(denominator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0))))
+        de=denominator(b_F[i,1]);
+        nu=numerator(b_F[i,1]);
+        if F(de)==0
+            b_Q[i,1]=F(0);
+        else
+            de=1/F(de);
+            b_Q[i,1]=F(de*nu);
+        end
+        #b_Q[i,1]=1/F(denominator(coeff(lift(Qx,R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r])+O(R1,p1^(m-1)))),0)))
+        for j in 1:length(n) 
+            a[i,j]=R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1));
+            a_F[i,j]=coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0);
+            # a[i,j]=R1(evaluate(n[j],[p,q,r]))+O(R1,p1^(m-1));
+            # a_F[i,j]=coeff(lift(Qx,R1(evaluate(n[j],[p,q,r]))+O(R1,p1^(m-1))),0);
+            de=denominator(a_F[i,j]);
+            nu=numerator(a_F[i,j]);
+            if F(de)==0
+                a_Q[i,j]=F(0);
+            else
+            de=1/F(de);
+            a_Q[i,j]=F(nu*de);
+        end
+        #    a_Q[i,j]=F(numerator(coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0))*1/F(denominator(coeff(lift(Qx,R1(evaluate(n[j],[p,q,r])/evaluate(d,[p,q,r]))+O(R1,p1^(m-1))),0))));
     end 
     
 end
@@ -2097,7 +2279,10 @@ b_F=B_F(b_F);
 a_Q=A_Q(a_Q);
 b_Q=B_Q(b_Q);
 if det(a_F)==0
-    error("Try again with different probes");
+    error("Try again with different probes det is zero");
+    #q=pickDen(R,R1,common_factors,w,candidate_den,20 );
+    #return interpolateAnsatz(R,Int(prime(R1)),n,BB,q,computed_den,computed_num);
+   \
 else
     inc=inv(a_F)*b_F;
     c=[];
@@ -2112,9 +2297,203 @@ else
         #    nu=1/F(numerator(a));
         #    println([F(a),F(de*nu)])
         push!(c,F(inc[i]))
+            #---------------------------------
+            p=pr[1][1];
+            q=pr[1][2];
+            r=pr[1][3];
+            constructed_term=0;
+            if length(computed_den)!=0
+                for k in 1:length(computed_den) 
+                    constructed_term=constructed_term+(evaluate(computed_num[k],[p,q,r])/evaluate(computed_den[k],[p,q,r]) )
+                end    
+            end
+    
+            lhs=R1(evaluateBB(BB,[p,q,r])-constructed_term)+O(R1,p1^(m-1));
+            #lhs=R1(evaluate(common_num,[p,q,r])/evaluate(f,[p,q,r]))+O(R1,p1^(m-1))
+            lhs_F=coeff(lift(Qx,lhs),0)
+            C=matrix_space(R1,1,length(n))
+            C_F=matrix_space(QQ,1,length(n))
+            c_l=Matrix{typeof(R1(1))}(undef,1,length(n))
+            c_F=Matrix{typeof(QQ(1))}(undef,1,length(n))
+            for i in 1:length(n) 
+                c_l[1,i]=R1(evaluate(n[i],[p,q,r])/evaluate(d,[p,q,r]))
+                c_F[1,i]=coeff(lift(Qx,R1(evaluate(n[i],[p,q,r])/evaluate(d,[p,q,r]))),0)
+            end 
+            c_l=C(c_l)
+            c_F=C_F(c_F)
+            println([R1((c_F*inv(a_F)*b_F)[1])+O(R1,p1^(m-1)),R1(lhs_F)+O(R1,p1^(m-1))])
+            #---------------------------------
         end
         #push!(c,F(inc[i]))
     end    
     return(c);
 end
 end
+
+function getWeights(R::Ring,R1::Field,common_factors1::Vector)
+P=Int(prime(R1));
+F=GF(P);
+Qx, x = QQ["x"];
+t=rand(10000:100000);
+vars=gens(R);
+s=[];
+candidate_w=[];
+common_factors,i_w=getIndDen(R,common_factors1);
+#for i in 1:length(i_w) 
+for i in 1:length(common_factors1)
+push!(s,0:8);
+end
+#tot_weights=enumerateTerms([0:4,0:4,0:4]);
+tot_weights=enumerateTerms(s);
+tot_weights=deleteat!(tot_weights,[1])
+print(tot_weights)
+#---------------------------------------------------------
+for o in 1:length(tot_weights) 
+    w1=tot_weights[o];
+    w=Vector{typeof(1)}(undef,length(vars));
+    for i in 1: length(vars)
+        w[i]=w1[i];
+    end
+    for i in 1:length(i_w)
+        w[i]= w1[i_w[i]];
+    end
+    println(w)
+    #undef_indices=findall(x->x===nothing || x ===missing,w);
+    #for i in 1:length(undef_indices) 
+    #    w[undef_indices[i]]=rand(0:4);
+    #end
+    #println(w)
+    X=matrix_space(QQ,length(common_factors),length(vars));
+    x=Matrix(zero_matrix(QQ,length(common_factors),length(vars)))
+    
+    for i in 1:length(common_factors) 
+        f=common_factors[i];
+        while f!=0
+            for j in 1:length(vars) 
+                if leading_monomial(f)==vars[j]
+                    x[i,j]=leading_coefficient(f)#R1(leading_coefficient(f));                   
+                end
+            end   
+            f=tail(f); 
+        end
+    end
+    x=X(x);
+
+    C=matrix_space(QQ,length(common_factors),1);
+    c=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
+    d=Matrix{typeof(QQ(1))}(undef,length(common_factors),1)
+    #P=Int64(101)
+
+    for i in 1:length(common_factors) 
+        l1=rand(1:(t*1000));
+        l=rand(1:t)//l1;
+        x1=R1(l)+O(R1,P^w[i]); 
+        p= l-lift(Qx, R1(x1));
+        l2=coeff(p,0);
+        l3=coeff(lift(Qx, R1(x1)),0);
+        while denominator(l2)%P==0 #&& denominator(l3)%P==0 
+            l1=rand(1:(t*1000));
+            l=rand(1:t)//l1;
+            x1=R1(l)+O(R1,P^w[i]); 
+            p= l-lift(Qx, R1(x1));
+            l2=coeff(p,0);
+            l3=coeff(lift(Qx, R1(x1)),0);
+        end
+    #l=rand(1:t)//l1;
+    #x1=R1(l)+O(R1,P^w[i]); 
+    #p= l-lift(Qx, R1(x1));
+    #c[i,1]=coeff(p,0);
+        c[i,1]=l2;
+        d[i,1]=coeff(lift(Qx, R1(x1)),0);
+    end
+    c=C(c)
+    d=C(d)
+    prob1=Matrix(inv(x)*c)
+    prob2=Matrix(inv(x)*d)
+    e1=prob1[1,1]
+    e2=prob1[2,1]
+    e3=prob1[3,1]
+
+    if F(coeff(lift(Qx,R1(e1)),0))!=0 || F(coeff(lift(Qx,R1(e2)),0))!=0||F(coeff(lift(Qx,R1(e3)),0))!=0
+        w_j=[]
+        for j in 1:length(common_factors1) 
+            push!(w_j,valuation(R1(evaluate(common_factors1[j],[e1,e2,e3]))));
+        end
+        if length(findall(x->x==w_j,candidate_w))==0
+        push!(candidate_w,w_j)
+        end
+    end
+end
+#=---------------------------------------------------------
+p=Int(prime(R1));
+Qx, x = QQ["x"];
+vars=gens(R);
+candidate_w=[];
+F=GF(p);
+#common_factors=getIndDen(R,common_factors);
+for i in 2:length(tot_weights) 
+    w=collect(tot_weights[i]);
+    prob1,prob2=generating_probes(R,p,common_factors,w,rand(1000:10000))
+    p1=prob1[1,1]
+    q1=prob1[2,1]
+    r1=prob1[3,1]
+    w_j=[];
+    for j in 1:length(common_factors) 
+        push!(w_j,valuation(R1(evaluate(common_factors[j],[p1,q1,r1]))));
+    end
+    if F(coeff(lift(Qx,R1(p1)),0))!=0 && length(findall(x->x==w_j,candidate_w))==0
+        push!(candidate_w,w_j)            
+    end    
+    #println(valuation(R1(evaluate(common_factors[1],[p1,q1,r1]))))
+    
+end
+=#
+return(candidate_w);
+end
+
+function getCandidateDenominators(R::Ring,common_den::Vector)
+s=[];
+common_factors=Vector{typeof(R(1))}(undef,0);
+candidate_den=[];
+for i in 1:length(common_den) 
+    push!(s,0:common_den[i][2])
+    push!(common_factors,R(common_den[i][1]))
+end
+exp_vec=enumerateTerms(s);
+exp_vec=deleteat!(exp_vec,[1,length(exp_vec)]);
+for i in 1:length(exp_vec) 
+   c=1;
+   for j in 1:length(common_factors) 
+    c=c*common_factors[j]^exp_vec[i][j]
+   end
+    push!(candidate_den,c);#common_den[1][1]^exp_vec[i][1]*common_den[2][1]^exp_vec[i][2]*common_den[3][1]^exp_vec[i][3]);
+end
+return([candidate_den,exp_vec,common_factors]);
+end
+
+function setBB(R::Ring,common_den::Vector,common_num)
+f=1;
+for i in 1:length(common_den) 
+    f=f*common_den[i][1]^common_den[i][2];
+end
+BB=[common_num,f];
+return(BB);
+end
+
+function computeCoef(R::Ring,ansatzC::Vector,ansatzP::Vector,prime_i::Vector)
+    try
+        f=0;
+        for i in 1:length(ansatzP[1]) 
+            c_i=Vector{Int64}(undef,0);
+            for j in 1:length(prime_i) 
+                push!(c_i,lift(ZZ,ansatzC[j][i]))
+            end 
+            c=manyRR(c_i,prime_i);
+            f=f+R(c[1]//c[2])*ansatzP[1][i];
+        end
+            return f
+    catch
+        return nothing
+    end
+end
+

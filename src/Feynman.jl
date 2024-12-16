@@ -42,6 +42,12 @@ export evaluateBB
 export pickWeights
 export numeratorAnsatz
 export interpolateAnsatz
+export getWeights
+export setBB
+export getCandidateDenominators
+export getIndDen
+export interpolateAnsatzTemp
+export computeCoef
  include("Functions.jl")
  #include("DataTypes.jl")
 # Write your package code here.
