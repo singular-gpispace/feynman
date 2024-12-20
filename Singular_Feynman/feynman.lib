@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////
-version="version classify2.lib 4.0.0.0 Jun_2013 "; // $Id:  $
+version="version classify2.lib 4.3.0.0 Jun_2013 "; // $Id:  $
 category="Commutative Algebra";
 info="
 LIBRARY: feynman.lib   Feynman integrals and IBP
@@ -39,11 +39,12 @@ getSortMeasures(l)                                      return list of sort meas
 extractCoef(I,ind,l)                                    return list of values where, the i-th element is the evaluation of coefficient function  at values in the list l of the IBP relation oneIBP, whose index is i=ind[i][1]. Columns of the matrix correspond to the all used indices in the setIBP which are ordered with respect to the output ofgetSortMeasures.
 setMat(S,val)                                           return matrix,where i-th row correspond to the evaluation of coefficient functions of i-th IBP in setIBP. 
 getRedIBPs(S,p)                                         list L, L[1]=indIBP, L[2]=seed where, indIBP contain the linearly independent IBP relations of setIBP which are obtained by finite field row reduction over the field Fp. seed contain the indeces correspond to the non-free columns in rref.
-getIndIBP(I)                                            return list ind where each entry is a pair (indv,sortmeasures), indv is the list of indices(seed) appered in the setIBP and sortmeasures is the output of getSortMeasures(indv).The function getIndIBP extract the seeds appeared in the IBP identities of the setIBP, sort them lexicographically based on the values got from getSortMeasures and return the output.
+getSortedIntegrals(I)                                            return list ind where each entry is a pair (indv,sortmeasures), indv is the list of indices(seed) appered in the setIBP and sortmeasures is the output of getSortMeasures(indv).The function getSortedIntegrals extract the seeds appeared in the IBP identities of the setIBP, sort them lexicographically based on the values got from getSortMeasures and return the output.
 computeManyIBP(G0,setNu)                                return setIBP S, where it contains all the IBP relations obtained by module intersection and seeding
 ";
 
 LIB "linalg.lib";
+
 proc mod_init()
 {
 LIB "general.lib";
@@ -271,6 +272,7 @@ KEYWORDS: Feynman graph
 EXAMPLE:  example printLabeledGraph; shows an example
 "
 {
+  setring I.over;
 print("Collection of IBP identities of the given graph with respect to the seed "+string(I.seed)+".");
 print("Total number of identities= "+string(size(I.IBP)));
 }
@@ -781,6 +783,7 @@ int m = npars(R);
 int m2 = (m*(m-1)) div 2;
 int mt= m2-1;
 int n = ncols(PI)-m2;
+//ring Z = (0,(t(1..mt),D)),(z(1..n)),dp; //change this
 ring Z = (0,t(1..mt)),(z(1..n)),dp;
 matrix B[nvars(RP)][nvars(RP)];
 int idx=1;
@@ -1037,6 +1040,8 @@ if(size(Nu)<>n){
 
 module M1=computeM1(G,Nu);
 module M2=computeM2(G,Nu);
+
+
 option(redSB);
 module M=std(intersect(M1,M2));
 
@@ -1093,7 +1098,7 @@ for(int i=1;i<=size(M);i++){
   }
 
 }
-ring Z= 0,(t(1..(m-1)),D),dp;
+//ring Z= 0,(t(1..(m-1)),D),dp;
 //S.over=Z;
 return(S);
 
@@ -1102,14 +1107,13 @@ example
 { "EXAMPLE:"; echo=2;labeledgraph G1 = computeBaikovMatrix(G);
   graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
   labeledgraph G1=computeBaikovMatrix(G);
-timer=0;
   setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
-  S;
   ring R=S.over;
+  setring R;
+  S;
   oneIBP I=S.IBP[1];
   I;
-int elapsed_time = timer;
-"Elapsed time in seconds:" , elapsed_time;
+
 }
 
           ////////////////////////////////////////////////////////////////////////////////////////////
@@ -1117,13 +1121,13 @@ int elapsed_time = timer;
           ///////////////////////////////////////////////////////////////////////////////////////////
 
 
-//**Steps
+//**Steps(to solve the problem sequentially)
 //0. We are given the feynman graph and list of target integrals assocated to the graph which we need to solve the reduction problem
 //1. Create the labelled graph and compute Baikov matrix
 //2. Decide whether we need one sector web or more than one web (there are more than one integral family), to solve the problem. If there are more than one web, we have to handle them sepeately
 //   so that we have different set of reduced IBP relations for each integral class.
 // ** Assume we can solve the problem using one sector web
-//3. Create the initial sector Web structure. Also two lists to store independent IBP identities (say indIBPs), and master integrals (ML)
+//3. Create the initial sector Web structure. Also create two lists to store independent IBP identities (say indIBPs), and master integrals (MI)
 //4. Upadate the web including target integrals to the web
 //5. Starting from the top layer of the web,
 //6. For each sector in that layer, generate IBP relations correspond to each integrals belong to that sector.
@@ -1137,9 +1141,10 @@ int elapsed_time = timer;
 
 
 proc getSector(list l)
-"USAGE:  getSector(l); l list@*
-ASSUME:  l is a list of integer indices of a Feynman integral 
-RETURN:  The sector (a list of 1s and 0s) that the corresponding integral belongs
+"USAGE:   getSector(l); l list@*
+ASSUME:   l is a list of integer indices of a Feynman integral 
+RETURN:   list L, L[1]=s The sector (a list of 1s and 0s) that the corresponding integral belongs
+          L[2]=n the sector (a list of indices of s where has non-zero entries) that the corresponding integral belongs
 KEYWORDS: Feynman graph
 "
 {
@@ -1201,11 +1206,13 @@ EXAMPLE:  example listCombinations; shows an example
 example{
 ring R=0,(x,y,z),dp;
 list L=listCombinations(list(1,2,3,4),3);
+L[1];
+
 }
 
 
 proc generateWebSectors(list seed)
-"USAGE:   generateWebSectors(seed); L list, r int@*
+"USAGE:   generateWebSectors(seed);seed list@*
 ASSUME:   seed is a list of integer values.
 RETURN:   Web structure of the sectors L, where L is the list and L[1] is the sector that correspond to the seed and L[i] 
           contain the subsectors of the sectors in L[i-1]. Not that sector maps between the sectors have not been setted. 
@@ -1241,20 +1248,20 @@ example{
 
 proc isSubList(list l1,list l2)
 "USAGE:   isSubList(l1,l2); l1 list, l2 list@*
-ASSUME:   l1 and l2 are list of integers
+ASSUME:   l1 and l2 are list of positive integers
 RETURN:   1 if elements in l1 contain in l2
           0 if elements in l1 do not contain in l2
 KEYWORDS: 
 EXAMPLE:  isSubList; shows an example
 "
 {
-  if(size(l1)>size(l2)){
+  if(size(l1) > size(l2)){
     return(-1);
   }
   else{
     int ind=0;
-    for(int i=1;i<=size(l1);i++){
-      for(int j=1;j<=size(l2);j++){
+    for(int i=1;i <= size(l1);i++){
+      for(int j=1;j <= size(l2);j++){
         if(l2[j]==l1[i]){
           ind=ind+1;
         }
@@ -1273,9 +1280,11 @@ example{
   list l1=list(1,2,3,4,5,6,7);
   list l2=list(1,4,6);
   list l3=list(1,2,8);
+  list l4=list(1,4,6);
   isSubList(l2,l1);
   isSubList(l3,l1);
   isSubList(l1,l2);
+  isSubList(l2,l4);
 }
 
 
@@ -1351,7 +1360,7 @@ KEYWORDS: sector, generateWebSectors, getSectorMap
 EXAMPLE:  findSector; shows an example
 "
 {
-  if((size(sectorWeb)<currentPosition[1]) or currentPosition[2]==0 or ((isSubList(L,l)<>1) or (isSubList(l,L)<>1) ) and (size(sectorWeb)==currentPosition[1]))
+  if((size(sectorWeb)<currentPosition[1]) or currentPosition[2]==0 or ((isSubList(L,sectorWeb[currentPosition[1]][currentPosition[2]].lab)<>1) or (isSubList(sectorWeb[currentPosition[1]][currentPosition[2]].lab,L)<>1) ) and (size(sectorWeb)==currentPosition[1]))
   {
     return(list(-1)); 
   }
@@ -1446,11 +1455,11 @@ EXAMPLE:  updateWeb; shows an example
 { 
   list masterInt;
   list notInWeb;
-  for(int i=1;i<=size(setInt);i++)
+  for(int i=1;i <= size(setInt);i++)
   { list oneInt=setInt[i];
     list L=getSector(oneInt);
     list a=findSector(sectorWeb,currentPosition,L[2]);
-    if(size(a)<=1)
+    if(size(a) <= 1)
     {
       notInWeb[size(notInWeb)+1]=oneInt;
     }
@@ -1458,7 +1467,7 @@ EXAMPLE:  updateWeb; shows an example
     else
     {
       sectorWeb[a[1]][a[2]].targetInts[size(sectorWeb[a[1]][a[2]].targetInts)+1]=oneInt;
-      if(a[1]==currentPosition[1] and a[2]==currentPosition[2])
+      if(a[1] == currentPosition[1] and a[2] == currentPosition[2])
       {
         masterInt[size(masterInt)+1]=oneInt;
       }
@@ -1468,9 +1477,9 @@ EXAMPLE:  updateWeb; shows an example
   return(list(sectorWeb,masterInt,notInWeb));
 }
 example{
+  "EXAMPLE:"; echo=2;
   ring R=(0,(t,D)),(x,y,z),dp;
   list l=list(1,2,1);
-  list l=list(1,0,-2,-1,-2,-1,-1,-1,-1);
   list w=generateWebSectors(l);
   list w1=setSectorMap(w);
   list setInt=list(list(1,2,3),list(-1,1,2),list(1,1,-1),list(-1,0,-2));
@@ -1483,27 +1492,60 @@ example{
   w2[3];//integrals not in the web
 }
 example{
-"EXAMPLE:"; echo=2;list s= getSector(l);
+"EXAMPLE:"; echo=2;
   graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
   labeledgraph G1=computeBaikovMatrix(G);
   ring RZ= G1.baikovover;
   printMat(G1.baikovmatrix);
-  list l=list(1,1,1,-1,-3,-1,-1,-1,-1);
-  list w=generateWebSectors(l);
-  list w1=setSectorMap(w);
+  
+  list l=list(1,1,1,-1,-3,1,-1,-1,-1);
+  list web=generateWebSectors(l);
+  list w1=setSectorMap(web); 
+  web=w1;
   list setInt=list(l);
+  list setInt=list(list(1,1,1,-1,-3,1,-1,-1,-1),list(1,-1,1,-1,-3,-1,-1,-4,-1));
   list L1=pickHighestSector(setInt);  
-  list w2=updateWeb(w1,list(1,1),L1[1]);
+  
+  list w2=updateWeb(web,list(1,1),L1[1]); //updateWeb returns a list w3 with w3[1]=sectorWeb,w3[2]=list of master Integrals, w3[3]=list of integrals that not belong to the current web
+  web=w2[1]; 
   setIBP S=computeIBP(G1,L1[1][1]);
-  list L=getRedIBPs(S,101);
-  list setInt=L[2];
-  size(setInt);
-  size(L[1])<size(S.IBP) //we have a linearly independent set of IBPs. So this returns true
-  oneIBP I1=L[1][1];     //Here is an example for one IBP i
+  ring R=S.over;
+  setring R;
+  list L=getRedIBPs(S,101); //L[1]=list of independent IBPs,L[2]=list of master integrals
+  list independIBPs=L[1];
+  list masterAndTailIntgrals=L[2];
+  size(independIBPs) < size(S.IBP); //number of linearly independent set of IBPs are less than the number of orginal IBPs. So this returns true
+  
+  oneIBP I1=independIBPs[18];     //Here is an example for one IBP i
   I1;
-  list w2=updateWeb(w1,list(1,1),setInt);
-  size(w2[1][1][1].targetInts);
+  list w3=updateWeb(web,list(1,1),masterAndTailIntgrals); //updateWeb returns a list w3 with w3[1]=sectorWeb,w3[2]=list of master Integrals, w3[3]=list of integrals that not belong to the current web
+  web=w3[1];   
+  size(web[1][1].targetInts);
 }
+
+//-------------------------------------------------------------------------------
+proc getHighestSectorIndex(list targetInt)
+"USAGE:  pickHighestSector(targetInt); G is a list of list of integers of same length
+ASSUME:  targetInt is the list of target integrals 
+RETURN:  the intgral that belong to the heighest sector, if all integrals belong to the same sector web; otherwise, it returns a list of collection of integrals 
+         each need to be handled using different sector webs,
+KEYWORDS: Feynman graph
+"
+{
+  list sortedInt1;
+  list sortedInt2;
+  list intsWithSectors;
+  
+  for(int i=1;i <= size(targetInt);i++)
+  {
+    list L=getSector(targetInt[i]);
+    intsWithSectors[size(intsWithSectors)+1]=list(list(L[2],targetInt[i],i),list(size(L[2])));
+  }
+  list L=lexSort(intsWithSectors);
+ return(L[size(L)][1][3]);
+}
+
+
 
 //----------------functions to unite all the tasks---------------------------------
 proc pickHighestSector(list targetInt)
@@ -1518,7 +1560,7 @@ KEYWORDS: Feynman graph
   list sortedInt2;
   list intsWithSectors;
   
-  for(int i=1;i<=size(targetInt);i++)
+  for(int i=1;i <= size(targetInt);i++)
   {
     list L=getSector(targetInt[i]);
     intsWithSectors[size(intsWithSectors)+1]=list(list(L[2],targetInt[i]),list(size(L[2])));
@@ -1549,11 +1591,14 @@ KEYWORDS: Feynman graph
       }
     }
   } 
+ 
 return(sortedInt2);
 }
 example{
-  ring R=0,(x,y,z),dp;
-  list setInt=list(list(1,2,3),list(-1,1,2),list(1,1,-1),list(-1,0,-2)); //here we can do the reduction using one web
+  list setInt=list(list(-1,1,2),list(1,1,-1),list(-1,0,-2),list(1,2,3)); //here we can do the reduction using one web
+  list L=pickHighestSector(setInt);
+  size(L);
+
   list setInt=list(list(-1,1,2),list(1,1,-1),list(-1,0,-2)); //here we need more than one web
   list L=pickHighestSector(setInt);
   size(L);
@@ -1575,9 +1620,10 @@ proc setSerial(list L)
 
 
 proc isInList(list l,string a)
-{ int ind=0;
+{
+int ind=0;
 int t;
-for(int m=1;m<=size(l);m++){
+for(int m=1;m <= size(l);m++){
  // t=0;
  // for(int j=1;j<=size(a);j++){
  //     if(l[m][j]!=a[j]){
@@ -1591,6 +1637,34 @@ for(int m=1;m<=size(l);m++){
           
 }
     if(ind==0)
+    {
+      return(0);
+    }
+    else
+    {
+      return(1);
+    }
+}
+
+proc alreadyIntheList(list l,list a)
+{
+int ind=0;
+int t;
+for(int m=1;m <= size(l);m++)
+{
+ // t=0;
+ // for(int j=1;j<=size(a);j++){
+ //     if(l[m][j]!=a[j]){
+ //       t++;
+ //     }
+  //  }
+  
+  if(t!=0){
+    ind++;
+  }
+          
+}
+    if(ind==size(l))
     {
       return(0);
     }
@@ -1635,7 +1709,7 @@ return(list(Nprop,Nid,r,s));
 
 proc comp_lex(list l1,list l2)
 {
-  for(int i=1;i<=size(l1);i++){
+  for(int i=1;i <= size(l1);i++){
     if(l1[i]<l2[i]) {return(-1);} //l1<l2
     if(l1[i]>l2[i]) {return(1);} //l1>l2 
   }
@@ -1647,7 +1721,7 @@ proc lexSort(list L)
   int n=size(L);
   for(int i=1;i<n;i++)
   {
-    for(int j=1;j<=n-i;j++)
+    for(int j=1;j <= n-i;j++)
     {
       if(comp_lex(L[j][2],L[j+1][2])==1)
       {
@@ -1663,7 +1737,7 @@ proc lexSort(list L)
 
 proc substituteList(poly f,list l)
 {
-  for(int i=1;i<=size(l);i++)
+  for(int i=1;i <= size(l);i++)
   { f=subst(f,par(i),l[i]);
   }
   return(f);
@@ -1678,7 +1752,7 @@ substituteList(f,l);
 
 proc extractCoef(oneIBP I,list ind,list l)
 "USAGE:   extractCoef(I,ind,l); I oneIBP,ind list,l list,
-ASSUME:   ind is the output of getIndIBP, and l is the list of values over the base field I.baikovover. 
+ASSUME:   ind is the output of getSortedIntegrals, and l is the list of values over the base field I.baikovover. 
           size(l)=npars(I.baikovover)
 RETURN:   list of values where, the i-th element is the evaluation of coefficient function  at values in the list l of the IBP relation oneIBP, whose index is i=ind[i][1].
 KEYWORDS: feynman graph,IBPs
@@ -1686,9 +1760,9 @@ EXAMPLE:  extractCoef; shows an example
 "
 { list v;
 
-  for(int j=1;j<=size(ind);j++){
+  for(int j=1;j <= size(ind);j++){
     int tem=0;
-    for(int k=1;k<=size(I.c);k++){
+    for(int k=1;k <= size(I.c);k++){
       if(comp_lex(ind[j][1],I.i[k])==0){
         v[j]=substituteList(I.c[k],l);
         tem++;
@@ -1706,10 +1780,17 @@ example
   labeledgraph G1=computeBaikovMatrix(G);
   setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
   ring R=S.over;
-  list ind = getIndIBP(S);
+  setring R;
+  list ind = getSortedIntegrals(S);
   oneIBP I=S.IBP[1];
-  list l=extractCoef(I,ind,list(1,2,3));
-  l;
+  I;
+  list rowCorrespondToI=extractCoef(I,ind,list(1,2,9)); 
+  
+  // the nonzero coefficient of the IBP relation correspond to integral I(1,1,0,1,0,0,0,1,0).
+  // when we use lex ordering to order the used integrals in set of IBPs, this integral correspond to the 90th place.
+ // so we get only a nonzero value at position 90 and the below, the output will be 7.
+
+  rowCorrespondToI[90]; //output will be 7
 }
 
 proc setMat(setIBP S,list val)
@@ -1723,12 +1804,12 @@ EXAMPLE:  setMat; shows an example
 "
 {
   ring RZ=S.over;
-  list ind = getIndIBP(S);
+  list ind = getSortedIntegrals(S);
   matrix X[size(S.IBP)][size(ind)];
-  for(int j=1;j<=size(S.IBP);j++){
+  for(int j=1;j <= size(S.IBP);j++){
     oneIBP L=S.IBP[j];
     list v=extractCoef(L,ind,val);
-    for(int k=1;k<=size(v);k++){
+    for(int k=1;k <= size(v);k++){
       X[j,k]=v[k];
     }
   }
@@ -1739,12 +1820,12 @@ EXAMPLE:  setMat; shows an example
 
 proc setMat(setIBP S,list val,list ind){
   ring RZ=S.over;
- // list ind = getIndIBP(S);
+ // list ind = getSortedIntegrals(S);
   matrix X[size(S.IBP)][size(ind)];
-  for(int j=1;j<=size(S.IBP);j++){
+  for(int j=1;j <= size(S.IBP);j++){
     oneIBP L=S.IBP[j];
     list v=extractCoef(L,ind,val);
-    for(int k=1;k<=size(v);k++){
+    for(int k=1;k <= size(v);k++){
       X[j,k]=v[k];
     }
   }
@@ -1758,9 +1839,10 @@ example
   labeledgraph G1=computeBaikovMatrix(G);
   setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
   ring R=S.over;
-  list ind = getIndIBP(S);
+  setring R;
+  list ind = getSortedIntegrals(S);
   matrix N=setMat(S,list(1,2,3),ind);
-  printMat(N);
+  
 }
 
 
@@ -1774,7 +1856,7 @@ EXAMPLE:  getRandom; shows an example
 {
 list L;
 intmat m=random(p-1,1,s);
-for(int i=1;i<=s;i++)
+for(int i=1;i <= s;i++)
 {
   L[i]=m[1,i];
 }
@@ -1793,18 +1875,21 @@ EXAMPLE:  getRedIBPs; shows an example
 
 {
   ring R=S.over;
-  list ind = getIndIBP(S);
+  list ind = getSortedIntegrals(S);
   list val=getRandom(p,npars(R));
   list indIBP;
   int l=1;
   matrix N=setMat(S,val,ind);
   ring RZ=(p,t(1..(npars(R)-1)),D),z(1..nvars(R)),dp;
   matrix N=imap(R,N);
+  timer=0;
   list Z=gaussred_pivot(N);
+  int elapsed_time = timer;
+print("Elapsed time to compute rref in seconds:" +string( elapsed_time)+ ". size of the matrix:"+string(nrows(N))+" * "+string(ncols(N)));
    setring R;
   list Z=imap(RZ,Z);
-  for(int j=1;j<=Z[4];j++)
-  { for(int k=1;k<=ncols(Z[1]);k++)
+  for(int j=1;j <= Z[4];j++)
+  { for(int k=1;k <= ncols(Z[1]);k++)
     {
       if(Z[1][j,k]<>0){
         indIBP[l]=S.IBP[k];
@@ -1817,8 +1902,8 @@ EXAMPLE:  getRedIBPs; shows an example
   //identify non-zero columns
   list seed;
   int l=1;
-  for(int k=1;k<=ncols(Z[3]);k++){
-    for(int j=1;j<=nrows(Z[3]);j++){
+  for(int k=1;k <= ncols(Z[3]);k++){
+    for(int j=1;j <= nrows(Z[3]);j++){
       if(Z[3][j,k]<>0){
         seed[l]=ind[k][1];
         l++;
@@ -1836,30 +1921,31 @@ example
   labeledgraph G1=computeBaikovMatrix(G);
   setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
   ring R=S.over;
+  setring R;
   list L=getRedIBPs(S,101);
-  size(L[1])<size(S.IBP)
+  size(L[1])<size(S.IBP);
 }
 
 
 
-proc getIndIBP(setIBP I)
-"USAGE:  getIndIBP(I); I setIBP,
+proc getSortedIntegrals(setIBP I)
+"USAGE:  getSortedIntegrals(I); I setIBP,
 ASSUME:   
 RETURN:  list ind where each entry is a pair (indv,sortmeasures),
           indv is the list of indices(seed) appered in the setIBP 
           and sortmeasures is the output of getSortMeasures(indv).
-          The function getIndIBP extract the seeds appeared in the IBP identities of the setIBP,
+          The function getSortedIntegrals extract the seeds appeared in the IBP identities of the setIBP,
           sort them lexicographically based on the values got from getSortMeasures and return the output.
 KEYWORDS: Feynman graph
 "
 {
   ring RZ=I.over;
   list ind;
-  list indS;
+  list indS; 
   for(int j=1;j<=size(I.IBP);j++)
   {
       oneIBP oneI=I.IBP[j];
-      for(int k=1;k<=size(oneI.i);k++)
+      for(int k=1;k <= size(oneI.i);k++)
       {
         list indv=oneI.i[k];
         if(size(ind)==0){
@@ -1882,20 +1968,14 @@ return(indc);
 }
 
 example
-{ "EXAMPLE:"; echo=2;list s= getSector(l);
+{ "EXAMPLE:"; echo=2;
   graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
   labeledgraph G1=computeBaikovMatrix(G);
   setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
   ring R=S.over;
-
-  cmp_lex(list(1,2,3),list(0,2,1));
-
-  getSortMeasures(list(1,2,1,0));
-  list ind = getIndIBP(S);
-  
-  list ind = list(list(1,list(1,2,3)),list(2,list(1,2,2)),list(3,list(1,3,2)));
-  list ind = lexSort(ind);
-  size(ind);
+  setring R;
+  list L=getSortedIntegrals(S); //L list of pair of sorted integrals and the corresponding sorting measures
+L[1];
 }
 
 
@@ -1903,7 +1983,7 @@ example
 proc computeManyIBP(def G0,list setNu)
 
 "USAGE:  computeManyIBP(G0,setNu); G0 graph@*,
-ASSUME:  setNu is a list of seeds correspond to the graph G0 which are belong to same integral family 
+ASSUME:  setNu is a list of seeds correspond to the graph G0 which are belong to the same sector 
 RETURN:  setIBP S, where it contains all the IBP relations obtained by module intersection and seeding
 KEYWORDS: Feynman graph,IBPs
 "
@@ -1999,112 +2079,167 @@ for(int b=1;b<=size(setNu);b++)
 
   }
 }
-ring Z= 0,(t(1..(m-1)),D),dp;
+//ring Z= 0,(t(1..(m-1)),D),dp;
 //S.over=Z;
 return(S);
 }
 example{
   graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
   labeledgraph G1=computeBaikovMatrix(G);
+
+  //here we compute set of IBPs correspond to two seeds seperately
   setIBP IBP1=computeIBP(G1,list(1,1,0,1,0,1,0,-1,0));
-  setIBP IBP2=computeIBP(G1,list(1,2,0,0,0,1,0,-2,0));
-  setIBP S=computeManyIBP(G1,list(list(1,1,0,1,0,1,0,-1,0),list(1,2,0,0,0,1,0,-2,0)));
+  setIBP IBP2=computeIBP(G1,list(1,2,0,3,0,1,0,-2,0));
+  size(IBP1.IBP);
+  size(IBP2.IBP);
+  
+  //here we compute set of IBPs correspond both seeds simultaneously 
+  //We can use this only when both integrals belongs to the same sector
+
+  setIBP S=computeManyIBP(G1,list(list(1,1,0,1,0,1,0,-1,0),list(1,2,0,3,0,1,0,-2,0)));
+  size(S.IBP);  
+  
 
 }
 
-example
+proc getReducedIBPSystem(graph G,list targetInt )
+"USAGE:  getReducedIBPSystem(G,targetInt); targetInt list,G graph@*,
+ASSUME:  G is a graph and targetInt is a list of seeds of target integrals. 
+RETURN:  list (reducedIBPs,MI) where  reducedIBPs::setIBP, MI::list.
+          reducedIBPs contain the reduced IBP system for the target integrals
+          MI contain the master integrals
+
+KEYWORDS: Feynman graph,IBPs
+"
+
 {
-//0. We are given the feynman graph and list of target integrals assocated to the graph which we need to solve the reduction problem
-
-//1. Create the labelled graph and compute Baikov matrix
-        graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
-        labeledgraph G1=computeBaikovMatrix(G);
-        ring RZ=G1.baikovover;
-      
-// ** Assume we can solve the problem using one sector web
-//3. Create the initial sector Web structure. Also two lists to store independent IBP identities (say indIBPs), and master integrals (ML)
-    list l=list(1,1,1,-1,-3,-1,-1,-1,-1);
-    list w=generateWebSectors(l);
-    list w1=setSectorMap(w); 
-    list targetInt=list(l);
-
-
-
-//2. Decide whether we need one sector web or more than one web (there are more than one integral family), to solve the problem. If there are more than one web, we have to handle them sepeately
-//   so that we have different set of reduced IBP relations for each integral class.
-    list L3=pickHighestSector(targetInt);
-    print("size of L3="+string(size(L3)));
-    if(size(L3)>1)                                                       //if size(L)>1, we have to do the same for each list in L.
-    {
-      print("provided integrals belong to more than one integral class");
-    }
- 
-   
-//4. Upadate the web including target integrals to the web    
-    list w4=updateWeb(w1,list(1,1),L3[1]);
-     list w2=w4[1];
-    setIBP independentIBPs;
-    list ML;
-
-//5. Starting from the top layer of the web,
-    int nLayers=size(w2);
-    for(int layer=1;layer <= nLayers; layer++)
-    {
-
-//6. For each sector in that layer, generate IBP relations correspond to each integrals belong to that sector.
-
-      int nSec=size(w2[layer]);
-      for(int sect=1; sect <= nSec; sect++)
-      {
-        if(size(w2[layer][sect].targetInts)>=1)
-        {
-          setIBP totalIBP=computeManyIBP(G1,w2[layer][sect].targetInts);
-
-//7. Then using finite field row reduction, identify independent IBPs, master integrals and tails integrals.
-          list L1=getRedIBPs(totalIBP,101);    //L[1]=,set of independent IBPs, L[2]=master and tail integrals
-//8. update indIBPs 
-          if(size(independentIBPs.IBP)==0)
-          {
-            independentIBPs.IBP=L1[1];
-          }
-          else
-          {
-           // independentIBPs.IBP=independentIBPs.IBP,L1[1];
-            for(int i=1;i<=size(L1[1]);i++)
-            {
-              independentIBPs.IBP[size(independentIBPs.IBP)+1]=L1[1][i];
-
-            }
-          }
+  //Better to check that the provided integrals belong to the same integral family
     
-//9. using tail integrals,MLs, update the sector Web.
-          list w3=updateWeb(w1,list(layer,sect),L1[2]);
-          if(size(ML)==0)
-          { 
-            ML=w3[2];
+    list L=pickHighestSector(targetInt);
+    if(size(L)>1)                           //if size(L)>1, we have to do the same for each list in L.
+    {
+      ERROR("provided integrals belong to more than one integral class");
+    }
+
+   // L[1] is the list of target integrals belong to one integral family but it has arranged so that.. 
+   //..L[1][1] is the integral belong to the superior sector.
+  // we use this seed (i.e. target integral) to create the web structure 
+
+
+  //When we do computation sequentially, it is better to have web structure of the sectors upfront.
+  //We denote it by a list web, where web[i] contains the sectors belong to that layer.
+
+  list web=generateWebSectors(L[1][1]); 
+  web=setSectorMap(web);
+
+  //After creating the web, we have to update it by including the target integrals to the corresponding sectors
+  //Because, when we do the intended computation in sectors, we read seeds from this updated 
+  //This update step need to perform with tail integrals of each sector, once the computations correspond to sectors in each layer are done. 
+  //If the computation done correctly, tail integrals will only be assigned to the sectors in the below layers.
+
+  list w4=updateWeb(web,list(1,1),targetInt); 
+  web=w4[1];
+
+  // *this return a list w4, where w4[1] is the updated web and
+  // w4[2] is the list of integrals that does not belong to the current web (if any have. usually dont!) 
+
+  // We set two places to store reduced IBP relations (a setIBP), and master integrals (a list) that are comes from..
+  //..the intended computations relevent to each sector   
+  
+  //before we go further,we first create the labelled graph G1 of G computing Baikov matrix
+  
+  labeledgraph G1=computeBaikovMatrix(G);
+  setIBP reducedIBPs;
+  list MI;
+  //reducedIBPs.over=G1.baikovover;
+  int te=0;
+  reducedIBPs.seed=targetInt;
+  
+
+  int nLayers=size(web);
+  for(int j=1; j <= nLayers; j++)
+    {
+
+//For each sector in that layer j, generate IBP relations correspond to each integrals belong to that sector.
+
+      int nSectors=size(web[j]);
+      for(int k=1; k <= nSectors; k++)
+      {
+        
+        if(size(web[j][k].targetInts)>=1)
+        {
+          setIBP totalIBP=computeManyIBP(G1,web[j][k].targetInts);
+         
+          if(te==0){
+            reducedIBPs.over=totalIBP.over;
+            te=te+1;
+          }
+         ring R=reducedIBPs.over;
+         
+        
+//using finite field row reduction, identify independent IBPs, master integrals and tails integrals.
+          list L=getRedIBPs(totalIBP,101);    //L[1]=,set of independent IBPs, L[2]=master and tail integrals
+          list indpndIBP=L[1];
+          list masterAndTailIntgrals=L[2];
+// update reducedIBPs. 
+          setring R;
+          if(size(reducedIBPs.IBP)==0)
+          {
+            
+            //reducedIBPs.IBP=imap(reducedIBPs.over,indpndIBP);
+            reducedIBPs.IBP=indpndIBP;
           }
           else
           {
-           // ML=ML,w3[2];
-            for(int i=1;i<size(w3[2]);i++)
+            for(int i=1;i <= size(indpndIBP);i++)
             {
-                ML[size(ML)+1]=w3[2][i];
+             // reducedIBPs.IBP[size(reducedIBPs.IBP)+1]=imap(reducedIBPs.over,indpndIBP[i]);
+               reducedIBPs.IBP[size(reducedIBPs.IBP)+1]=indpndIBP[i];
+
             }
           }
-          print("error is here 1837");
-          w2=w3[1];
+    kill R;
+//Update the sectors below to the current sector using masterAndTailIntgrals. In this step, we can also.. 
+//..distingush the master integrals which will be assigned to MI.
+          list w=updateWeb(web,list(j,k),masterAndTailIntgrals);
+          web=w[1]; //here the web is updated
+          list masterIntgralsInSector=w[2];
+          if(size(MI)==0)
+          { 
+            MI=masterIntgralsInSector;
+          }
+          else
+          {
+            for(int i=1;i <= size(masterIntgralsInSector);i++)
+            {
+              if(alreadyIntheList(MI,masterIntgralsInSector[i])==1)
+              {
+                MI[size(MI)+1]=masterIntgralsInSector[i];
+              }
+                //MI[size(MI)+1]=masterIntgralsInSector[i];
+            }
+          }
+          print("completed the computation in the sector:"+string(k)+ " at layer "+string(j)+". ");
+          
         }   
       }
 
     }
+return(list(reducedIBPs,MI));
+}
+example{
+  graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+  //list targetInt=list(list(1,1,1,-1,-3,1,-1,-1,-1),list(1,-1,1,-1,-3,-1,-1,-4,-1));
+  list targetInt=list(list(1,2,1,-1,-3,-1,-1,-1,-1),list(1,-1,1,-1,-3,-1,-1,-4,-1));
+  list finalset=getReducedIBPSystem(G,targetInt);
+  setIBP S=finalset[1];
+  ring R=S.over;
+  setring R;
+  oneIBP I=S.IBP[4];
+  I;
+  size(finalset[2]);
+}
 
-    independentIBPs.over=G1.baikovover;
-    independentIBPs.seed=targetInt;
-    size(independentIBPs.IBP);
-    oneIBP I1=independentIBPs.IBP[40];
-    I1;
-    
-  }
 
 
 
