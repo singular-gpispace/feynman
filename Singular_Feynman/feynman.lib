@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////
-version="version classify2.lib 4.3.0.0 Jun_2013 "; // $Id:  $
+version="version classify2.lib 4.0.0.0 Jun_2013 "; // $Id:  $
 category="Commutative Algebra";
 info="
 LIBRARY: feynman.lib   Feynman integrals and IBP
@@ -1350,7 +1350,6 @@ example{
 
 }
 
-
 proc findSector(list sectorWeb, list currentPosition, list L)
 "USAGE:   findSector(sectorWeb,currentPosition,L); sectorWeb list,currentPosition list,L list,
 ASSUME:   sectorWeb is an output produced by the function generateWebSectors@*, L is an output produced by the function getSector@*
@@ -1359,41 +1358,29 @@ RETURN:   position of the sector in the sectorWeb, where the L belongs.
 KEYWORDS: sector, generateWebSectors, getSectorMap
 EXAMPLE:  findSector; shows an example
 "
-{
-  if((size(sectorWeb)<currentPosition[1]) or currentPosition[2]==0 or ((isSubList(L,sectorWeb[currentPosition[1]][currentPosition[2]].lab)<>1) or (isSubList(sectorWeb[currentPosition[1]][currentPosition[2]].lab,L)<>1) ) and (size(sectorWeb)==currentPosition[1]))
+{ 
+  list pos;
+  for(int i=currentPosition[1];i <= size(sectorWeb);i++)
   {
-    return(list(-1)); 
+    for(int j=currentPosition[2]; j<= size(sectorWeb[i]);j++)
+    {
+      if(isSubList(L,sectorWeb[i][j].lab) ==  1 and isSubList(sectorWeb[i][j].lab,L)  ==  1)
+      {
+          pos[1]=i;
+          pos[2]=j;
+      } 
+    }
+
+  }
+  if(size(pos)==0){
+    return(-1);
   }
   else
   {
-
-    list l=sectorWeb[currentPosition[1]][currentPosition[2]].lab; 
-    if(isSubList(l,L)==1)
-    {
-      return(currentPosition);
-    } 
-
-    list sm=sectorWeb[currentPosition[1]][currentPosition[2]].sectorMap;
-    int id=0;
-    for(int i=1;i<=size(sm);i++)
-    {
-      list s=sectorWeb[currentPosition[1]+1][sm[i]].lab;
-      if(isSubList(L,s)==1)
-      {
-        id=sm[i];
-      
-      }
-    }  
-    if(isSubList(sectorWeb[currentPosition[1]+1][id].lab,L)==1 and id<>0)
-    {
-      return(list(currentPosition[1]+1,id));      
-    }
-    else{    
-    return(findSector(sectorWeb,list(currentPosition[1]+1,id),L));
-    }
+    return(pos);
   }
-}
 
+}
 example{
   ring R=0,(x,y,z),dp;
   list l=list(1,-1,0,1,2,-2);
@@ -1401,10 +1388,17 @@ example{
   list w1=setSectorMap(w);
   list oneInt=list(4,-1,-1,0,-1,-2);
   list L=getSector(oneInt);
-  list pos=findSector(w1,list(1,1),L[2]);
+  def pos=findX(w1,list(1,1),L[2]);
   isSubList(w[pos[1]][pos[2]].lab,L[2])==1 && isSubList(L[2],w[pos[1]][pos[2]].lab); //this returns 1, since the given integral is in the sector at pos.
 
+  //example for a integral that is not in the set
+  list oneInt=list(4,1,0,-1,-2,3);
+  list L=getSector(oneInt);
+  def pos=findX(w1,list(1,1),L[2]);
+  pos;
+  
 }
+
 
 
 proc updateOneSector(list sectorWeb, list currentPosition,list oneInt)
@@ -1941,7 +1935,7 @@ KEYWORDS: Feynman graph
 {
   ring RZ=I.over;
   list ind;
-  list indS; 
+  list indS;
   for(int j=1;j<=size(I.IBP);j++)
   {
       oneIBP oneI=I.IBP[j];
@@ -2235,7 +2229,7 @@ example{
   setIBP S=finalset[1];
   ring R=S.over;
   setring R;
-  oneIBP I=S.IBP[4];
+  oneIBP I=S.IBP[5];
   I;
   size(finalset[2]);
 }
