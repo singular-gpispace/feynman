@@ -741,11 +741,14 @@ KEYWORDS: Feynman graph
 EXAMPLE:  removeElimVars G; shows an example
 "
 {
+  
 if (typeof(G0)=="graph"){
   labeledgraph lG = labelGraph(G0,0);
   labeledgraph G1 = eliminateVariables(lG);
   labeledgraph G2 = removeElimVars(G1);
-  return(computeBaikovMatrix(G2));
+  //return(computeBaikovMatrix(G2));
+  kill G0;
+  labeledgraph G0 = G2;
 }
 if (typeof(G0)<>"labeledgraph"){
   ERROR("expected a graph or labeledgraph");
@@ -838,10 +841,14 @@ ASSUME:  G is a Graph, or@*
 RETURN:  The module M1 over G1.baikovover that requires to compute IBP identities 
 KEYWORDS: Feynman graph
 "
+
 {
 if (typeof(G0)=="graph"){
   labeledgraph G1 =computeBaikovMatrix(G0);
-  return(computeM1(G1));
+ // return(computeM1(G1));
+ kill G0;
+ labeledgraph G0=G1;
+ 
 }
 if (typeof(G0)<>"labeledgraph"){
   ERROR("expected a graph or labeledgraph");
@@ -959,7 +966,9 @@ KEYWORDS: Feynman graph
 {
   if (typeof(G0)=="graph"){
   labeledgraph G1 =computeBaikovMatrix(G0);
-  return(computeM2(G1,Nu));
+ // return(computeM2(G1,Nu));
+  kill G0;
+  labeledgraph G0 = G1;
 }
 if (typeof(G0)<>"labeledgraph"){
   ERROR("expected a graph or labeledgraph");
@@ -1018,7 +1027,9 @@ KEYWORDS: Feynman graph
 {
 if (typeof(G0)=="graph"){
   labeledgraph G1 =computeBaikovMatrix(G0);
-  return(computeM2(G1,Nu));
+  //return(computeM2(G1,Nu));
+  kill G0;
+  labeledgraph G0 = G1; 
 }
 if (typeof(G0)<>"labeledgraph"){
   ERROR("expected a graph or labeledgraph");
@@ -1388,13 +1399,13 @@ example{
   list w1=setSectorMap(w);
   list oneInt=list(4,-1,-1,0,-1,-2);
   list L=getSector(oneInt);
-  def pos=findX(w1,list(1,1),L[2]);
+  def pos=findSector(w1,list(1,1),L[2]);
   isSubList(w[pos[1]][pos[2]].lab,L[2])==1 && isSubList(L[2],w[pos[1]][pos[2]].lab); //this returns 1, since the given integral is in the sector at pos.
 
   //example for a integral that is not in the set
   list oneInt=list(4,1,0,-1,-2,3);
   list L=getSector(oneInt);
-  def pos=findX(w1,list(1,1),L[2]);
+  def pos=findSector(w1,list(1,1),L[2]);
   pos;
   
 }
@@ -1985,7 +1996,9 @@ KEYWORDS: Feynman graph,IBPs
 { 
 if (typeof(G0)=="graph"){
   labeledgraph G1 =computeBaikovMatrix(G0);
-  return(computeM2(G1,Nu));
+  //return(computeM2(G1,Nu));
+  kill G0;
+  labeledgraph G0=G1;
 }
 if (typeof(G0)<>"labeledgraph"){
   ERROR("expected a graph or labeledgraph");
@@ -2090,7 +2103,7 @@ example{
   //here we compute set of IBPs correspond both seeds simultaneously 
   //We can use this only when both integrals belongs to the same sector
 
-  setIBP S=computeManyIBP(G1,list(list(1,1,0,1,0,1,0,-1,0),list(1,2,0,3,0,1,0,-2,0)));
+  setIBP S=computeManyIBP(G,list(list(1,1,0,1,0,1,0,-1,0),list(1,2,0,3,0,1,0,-2,0)));
   size(S.IBP);  
   
 
