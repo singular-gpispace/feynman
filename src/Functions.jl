@@ -2328,7 +2328,7 @@ else
     end    
     return(c);
 end
-end
+end 
 
 function getWeights(R::Ring,R1::Field,common_factors1::Vector)
 P=Int(prime(R1));

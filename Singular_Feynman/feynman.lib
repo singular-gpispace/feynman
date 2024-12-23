@@ -602,7 +602,7 @@ EXAMPLE:  example propagators; shows an example
   ideal infedges = imap(S,infedges);
   J=reduce(J,std(infedges));
   setring S;
-  J=imap(RP,J);
+ ideal J=imap(RP,J);
   return(J);
 }
 example
@@ -648,7 +648,8 @@ EXAMPLE:  example ISP; shows an example
   ideal I = L[1..size(L)];
   kill J,infedges,el,L;
   setring S;
-  return(imap(RP,I));
+  ideal K=imap(RP,I);
+  return(K);
 }
 example
 { "EXAMPLE:"; echo=2;
@@ -711,7 +712,8 @@ for (int i = size(iv); i>=1;i--){
   RP1 = removeVariable(RP1,iv[i]);
 }
 setring R1;
-G1.labels = imap(R,lb);
+list tr =imap(R,lb);
+G1.labels = tr;
 G1.over = R1;
 G1.overpoly = RP1;
 G1.elimvars =list();
@@ -2192,8 +2194,8 @@ KEYWORDS: Feynman graph,IBPs
           setring R;
           if(size(reducedIBPs.IBP)==0)
           {
-            
-            //reducedIBPs.IBP=imap(reducedIBPs.over,indpndIBP);
+            //list resr = imap(reducedIBPs.over,indpndIBP);
+            //reducedIBPs.IBP=resr;
             reducedIBPs.IBP=indpndIBP;
           }
           else
@@ -2245,6 +2247,7 @@ example{
   oneIBP I=S.IBP[5];
   I;
   size(finalset[2]);
+  
 }
 
 
