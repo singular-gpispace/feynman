@@ -461,7 +461,7 @@ proc deleteFromIntvec(intvec v, int j){
 intvec w;
 int idx=1;
 for (int i = 1;i<=size(v);i++){
-   if (j<>i){w[idx]=v[i];idx=idx+1;}
+   if (j != i){w[idx]=v[i];idx=idx+1;}
 }
 return(w);}
 
@@ -682,7 +682,7 @@ list lb = G.labels;
 list iv,ip;
 int j,i;
 for (i = 1; i<=size(el);i++){
-  if (rvar(el[i])<>0){
+  if (rvar(el[i]) != 0){
      iv[size(iv)+1]=rvar(el[i]);
   } else {
      for (j=1;j<=npars(R);j++){ 
@@ -752,7 +752,7 @@ if (typeof(G0)=="graph"){
   kill G0;
   labeledgraph G0 = G2;
 }
-if (typeof(G0)<>"labeledgraph"){
+if (typeof(G0) != "labeledgraph"){
   ERROR("expected a graph or labeledgraph");
 }
 labeledgraph G = G0;
@@ -852,7 +852,7 @@ if (typeof(G0)=="graph"){
  labeledgraph G0=G1;
  
 }
-if (typeof(G0)<>"labeledgraph"){
+if (typeof(G0) != "labeledgraph"){
   ERROR("expected a graph or labeledgraph");
 }
 labeledgraph G = G0;
@@ -913,7 +913,7 @@ for(int i=E+1;i<=E+L;i++){
             }
           }
 
-          if(o<>0){
+          if(o != 0){
             c2=D[l,o];
           }
           a=a+c1*c2*B[j,k];
@@ -937,7 +937,7 @@ for(int j=1;j<size(M);j++){
     testP=testP+M[j][i]*diff(F,z(i));
     }
   testP=testP+M[j][n+1]*F;
-  if(testP<>0){
+  if(testP != 0){
     print("Something wrong");
   }
 
@@ -972,7 +972,7 @@ KEYWORDS: Feynman graph
   kill G0;
   labeledgraph G0 = G1;
 }
-if (typeof(G0)<>"labeledgraph"){
+if (typeof(G0) != "labeledgraph"){
   ERROR("expected a graph or labeledgraph");
 }
 
@@ -984,7 +984,7 @@ matrix B=G.baikovmatrix;
 setring RB;
 int n=nvars(RB);
 
-if(size(Nu)<>n){
+if(size(Nu) != n){
    ERROR("The length of the vector nu must equal to number of Baikov variables");
 }
 
@@ -1033,7 +1033,7 @@ if (typeof(G0)=="graph"){
   kill G0;
   labeledgraph G0 = G1; 
 }
-if (typeof(G0)<>"labeledgraph"){
+if (typeof(G0) != "labeledgraph"){
   ERROR("expected a graph or labeledgraph");
 }
 
@@ -1047,7 +1047,7 @@ int n=nvars(RB);
 int E = m;
 int L = nvars(R);
 
-if(size(Nu)<>n){
+if(size(Nu) != n){
   ERROR("The length of the vector nu must equal to number of Baikov variables");
 }
 
@@ -1067,7 +1067,7 @@ for(int j=1;j<size(M);j++){
     }
   testP=testP+M[j][n+1]*F;
   //print(testP);
-  if(testP<>0){
+  if(testP != 0){
     print("Something wrong");
   }
 }
@@ -1091,9 +1091,9 @@ for(int i=1;i<=size(M);i++){
   }
   poly h=(D-L-E-1)/2;
   f=f-M[i][n+1]*h; 
-  if(f<>0){
+  if(f != 0){
     int t=1;
-      while(f<>0){
+      while(f != 0){
         y[t]=leadcoef(f);
         list nu;
         for(int k=1;k<=size(Nu);k++){
@@ -1898,7 +1898,7 @@ print("Elapsed time to compute rref in seconds:" +string( elapsed_time)+ ". size
   for(int j=1;j <= Z[4];j++)
   { for(int k=1;k <= ncols(Z[1]);k++)
     {
-      if(Z[1][j,k]<>0){
+      if(Z[1][j,k] != 0){
         indIBP[l]=S.IBP[k];
         l++;
       }
@@ -1911,7 +1911,7 @@ print("Elapsed time to compute rref in seconds:" +string( elapsed_time)+ ". size
   int l=1;
   for(int k=1;k <= ncols(Z[3]);k++){
     for(int j=1;j <= nrows(Z[3]);j++){
-      if(Z[3][j,k]<>0){
+      if(Z[3][j,k] != 0){
         seed[l]=ind[k][1];
         l++;
         break;
@@ -2002,7 +2002,7 @@ if (typeof(G0)=="graph"){
   kill G0;
   labeledgraph G0=G1;
 }
-if (typeof(G0)<>"labeledgraph"){
+if (typeof(G0) != "labeledgraph"){
   ERROR("expected a graph or labeledgraph");
 }
 list Nu=setNu[1];
@@ -2016,7 +2016,7 @@ int n=nvars(RB);
 int E = m;
 int L = nvars(R);
 
-if(size(Nu)<>n){
+if(size(Nu) != n){
   ERROR("The length of the vector nu must equal to number of Baikov variables");
 }
 
@@ -2034,7 +2034,7 @@ for(int j=1;j<size(M);j++){
   }
   testP=testP+M[j][n+1]*F;
   //print(testP);
-  if(testP<>0){
+  if(testP != 0){
     print("Something wrong");
   }
 }
@@ -2064,10 +2064,10 @@ for(int b=1;b<=size(setNu);b++)
     }
     poly h=(D-L-E-1)/2;
     f=f-M[i][n+1]*h; 
-    if(f<>0)
+    if(f != 0)
     {
       int t=1;
-        while(f<>0)
+        while(f != 0)
         {
           y[t]=leadcoef(f);
           list nu;
@@ -2247,7 +2247,6 @@ example{
   oneIBP I=S.IBP[5];
   I;
   size(finalset[2]);
-  
 }
 
 
