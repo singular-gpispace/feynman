@@ -6,7 +6,7 @@
 using Feynman
 using Documenter
 
-DocMeta.setdocmeta!(Feynman, :DocTestSetup, :(using Feynman); recursive=true)
+DocMeta.setdocmeta!(Feynman, :DocTestSetup, :(using feynman); recursive=true)
 
 makedocs(;
     modules=[Feynman],
@@ -18,7 +18,7 @@ makedocs(;
     expandfirst = ["Overview.md"],
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://singular-gpispace.github.io/Feynman.jl",
+        canonical="https://singular-gpispace.github.io/feynman.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -42,6 +42,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/singular-gpispace/Feynman.jl",
+    repo="github.com/singular-gpispace/feynman.jl",
     devbranch="main",
 )
