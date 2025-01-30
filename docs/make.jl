@@ -1,3 +1,8 @@
+##-----direct to the julia working enviorenment
+#cd /hoome/dushan/julia_test
+
+#JULIA_PROJECT=docs/ julia -e 'using Pkg; Pkg.develop(path="/home/dushan/FM/feynman"); Pkg.instantiate()'
+#JULIA_PROJECT=docs/ julia /home/dushan/FM/feynman/docs/make.jl
 using Feynman
 using Documenter
 
