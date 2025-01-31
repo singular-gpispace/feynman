@@ -10,7 +10,7 @@ We define the graph G from the list of vertices and list of edges. The direction
 julia> G=simple_graph([1,2,3,4,5,6,7],[(6,1),(6,4),(1,2),(3,7),(4,3),(2,7),(5,6),(7,5),1,2,3,4,5]);
 ```
 
-We then assign polynomial variables q[i] at bounded edges and function field variables P[i] at the unbounded edges over a prime filed of characteristic 0.
+We then assign polynomial variables q[i],  at bounded edges and function field variables P[i] at the unbounded edges over a prime filed of characteristic 0.
 
 ```julia
 
