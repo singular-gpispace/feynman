@@ -44,4 +44,6 @@ makedocs(;
 deploydocs(;
     repo="github.com/singular-gpispace/feynman.jl",
     devbranch="main",
+    branch="gh-pages",
+
 )
