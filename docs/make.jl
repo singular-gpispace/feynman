@@ -26,6 +26,7 @@ makedocs(;
         "Home" => [
             "index.md",
             "Installation.md",
+            "Example.md",
          #   "SmallExample.md",
         ],
 
