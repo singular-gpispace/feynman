@@ -11,9 +11,12 @@
 [codecov-img]: https://codecov.io/gh/singular-gpispace/Feynman/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/singular-gpispace/Feynman
 
-| **Documentation**                                                         | **Build Status**                                      |
-|:-------------------------------------------------------------------------:|:-----------------------------------------------------:|
-| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][ga-img]][ga-url] [![][codecov-img]][codecov-url] |
+| **Documentation**                                                         | **Build 
+Status**                                      |
+|:-------------------------------------------------------------------------:|
+:-----------------------------------------------------:|
+| [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] | [![][ga-img]][ga-url] [![]
+[codecov-img]][codecov-url] |
 
 # Feynman
 
