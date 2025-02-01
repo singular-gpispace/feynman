@@ -15,7 +15,8 @@ makedocs(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://singular-gpispace.github.io/Feynman.jl",
         edit_link="main",
-        assets=String[],
+        assets = ["assets"],
+        #assets=String[],
     ),
     pages=[
         "Home" => [

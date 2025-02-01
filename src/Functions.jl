@@ -114,11 +114,11 @@ end
 #Make simple graph from list of vertices and edges
 
 @doc raw"""
-printLabeledGraph(G::labeledgraph)
+printLabeledGraph(G::labeledgraph)\\\\
 
-USAGE: printLabeledGraph(G);
-ASSUME: G is a labeled graph.
-Theory: This is the print function used in julia to print a labeled graph.
+\textbf{USAGE}: printLabeledGraph(G);\\
+\textbf{ASSUME}: G is a labeled graph.\\
+\textbf{Theory}: This is the print function used in julia to print a labeled graph.\\
 
 #Examples
 ```julia
@@ -147,12 +147,12 @@ printNet(ev);
 end
 
 @doc raw"""
-labelGraph(G::simple_graph,ch::Int)
+labelGraph(G::simple_graph,ch::Int)\\\\
 
-USAGE: labelGraph(G,ch)
-ASSUME: G is a graph and ch is either zero or prime.
-RETURN: labeled graph with polynomialvariables qi at the bounded edges and functin filed variables pi at the unbounded edges over a prime filed of characteristic ch
-Initially we it sets the fields Baikovmatrix and elimvar empty.
+\textbf{USAGE}: labelGraph(G,ch)\\
+\textbf{ASSUME}: G is a graph and ch is either zero or prime.\\
+\text{RETURN}: labeled graph with polynomialvariables qi at the bounded edges and functin filed variables pi at the unbounded edges over a prime filed of characteristic ch
+Initially we it sets the fields Baikovmatrix and elimvar empty.\\
  
 #Examples
 ```julia
