@@ -1,9 +1,10 @@
 using Feynman
 using Documenter
 
-DocMeta.setdocmeta!(Feynman, :DocTestSetup, :(using Feynman); recursive=true)
 # Run Singular and capture the output
-example_output = readchomp(`Singular run_Examples.sing`)
+example_output = readchomp(`Singular docs/run_Examples.sing`)
+
+DocMeta.setdocmeta!(Feynman, :DocTestSetup, :(using Feynman); recursive=true)
 
 makedocs(;
     modules=[Feynman],
