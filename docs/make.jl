@@ -24,19 +24,19 @@ makedocs(;
     ),
     pages=[
         "Home" => [
-            "src/index.md",
-            "src/Installation.md",
-            "src/Example.md",
+            "index.md",
+            "Installation.md",
+            "Example.md",
          #   "SmallExample.md",
         ],
 
         "Examples" =>[
-            "src/Example.md",
+            "Example.md",
 
         ],
 
         "Functions" =>[ 
-            "src/Overview.md",
+            "Overview.md",
         ],
 
     ],
