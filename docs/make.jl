@@ -21,7 +21,6 @@ makedocs(;
         "Home" => [
             "index.md",
             "Installation.md",
-            "Example.md",
         ],
         "Examples" => [
             "Example.md",
@@ -36,5 +35,6 @@ deploydocs(;
     repo="github.com/singular-gpispace/Feynman.jl",
     devbranch="main",
     branch="gh-pages",
-    versions = ["stable", "v#.#.#", "dev" => "main"]
+
 )
+
