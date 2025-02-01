@@ -3,7 +3,7 @@ using Documenter
 
 DocMeta.setdocmeta!(Feynman, :DocTestSetup, :(using Feynman); recursive=true)
 # Run Singular and capture the output
-example_output = readchomp(`Singular run_examples.sing`)
+example_output = readchomp(`Singular run_Examples.sing`)
 
 makedocs(;
     modules=[Feynman],
@@ -18,6 +18,7 @@ makedocs(;
         canonical="https://singular-gpispace.github.io/Feynman.jl",
         edit_link="main",
         assets=String[],
+        #
     ),
     pages=[
         "Home" => [
