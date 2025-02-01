@@ -2,7 +2,7 @@ using Feynman
 using Documenter
 
 # Run Singular and capture the output
-example_output = readchomp(`Singular docs/run_Examples.sing`)
+example_output = readchomp(`Singular /home/dushan/CX/Feynman/docs/run_Examples.sing`)
 
 DocMeta.setdocmeta!(Feynman, :DocTestSetup, :(using Feynman); recursive=true)
 
