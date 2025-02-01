@@ -1,0 +1,5 @@
+// Load the Library
+LIB "/home/dushan/CX/Feynman/Singular_Feynman/feynman.lib";
+
+// Run the example from printGraph
+example printGraph;
