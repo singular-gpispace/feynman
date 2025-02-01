@@ -1,8 +1,3 @@
-##-----direct to the julia working enviorenment
-#cd /hoome/dushan/julia_test
-
-#JULIA_PROJECT=docs/ julia -e 'using Pkg; Pkg.develop(path="/home/dushan/FM/feynman"); Pkg.instantiate()'
-#JULIA_PROJECT=docs/ julia /home/dushan/FM/feynman/docs/make.jl
 using Feynman
 using Documenter
 
@@ -27,26 +22,19 @@ makedocs(;
             "index.md",
             "Installation.md",
             "Example.md",
-         #   "SmallExample.md",
         ],
-
-        "Examples" =>[
+        "Examples" => [
             "Example.md",
-
         ],
-
-        "Functions" =>[ 
+        "Functions" => [
             "Overview.md",
         ],
-
     ],
-
-
 )
 
 deploydocs(;
     repo="github.com/singular-gpispace/Feynman.jl",
     devbranch="main",
     branch="gh-pages",
-
+    versions = ["stable", "v#.#.#", "dev" => "main"]
 )
