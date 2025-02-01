@@ -120,6 +120,7 @@ printLabeledGraph(G::labeledgraph)\\\\
 \textbf{ASSUME}: G is a labeled graph.\\
 \textbf{Theory}: This is the print function used in julia to print a labeled graph.\\
 
+
 #Examples
 ```julia
 julia> var=["x","y","z","p","q","r"];
@@ -774,11 +775,11 @@ end
 @doc raw"""
 ISP(G::labeledgraph)
 
-USAGE:  ISP(G);
-ASSUME: G is a labeled graph.
-RETURN: idal containing the irreducible scalar products(ISPs), that is, those scalar product which are not linearly dependent on the propagators.
+\textbf{USAGE}:  ISP(G);
+\textbf{ASSUME}: G is a labeled graph.
+\text{RETURN}: idal containing the irreducible scalar products(ISPs), that is, those scalar product which are not linearly dependent on the propagators.
 
-#Examples
+\textbf{#Examples}
 ```julia
 julia> G=simple_graph([1,2,3,4,5,6],[(1,2),(3,6),(4,5),(1,6),(2,3),(5,6),(3,4),1,2,5,4]);
 
