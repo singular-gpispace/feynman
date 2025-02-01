@@ -574,12 +574,12 @@ function removeParameter(P::Ring,l::Vector)
 end
 
 @doc raw"""
-feynmanDenominators(G::labeledgraph)
+**feynmanDenominators(G::labeledgraph)**
 
-USAGE:  feynmanDenominators(G);
-ASSUME: G is a labeled graph with the variables of the bounded edges eliminated according to balancing condition. i.e. G is a labeled graph where 
+**USAGE**   :  feynmanDenominators(G);
+**ASSUME**  : $G$ is a labeled graph with the variables of the bounded edges eliminated according to balancing condition. i.e. $G$ is a labeled graph where 
         the function eliminatedVariables applied.
-RETURN: ideal containing the propagators in the Feynman integral
+**RETURN**  : ideal containing the propagators in the Feynman integral
 
 #Examples
 ```julia
@@ -610,13 +610,13 @@ end
 
 
 @doc raw"""
-propagators(G::labeledgraph)
+**propagators(G::labeledgraph)**
 
-USAGE:  propagators(G)
-ASSUME: G is a labeld graph.
-RETURN: ideal, containing the denominators in the Feynman integral.
+**USAGE**:  propagators(G)
+**ASSUME**: G is a labeld graph.
+**RETURN**: ideal, containing the denominators in the Feynman integral.
 
-#Examples
+**#Examples**
 ```julia
 julia> G=simple_graph([1,2,3,4,5,6],[(1,2),(3,6),(4,5),(1,6),(2,3),(5,6),(3,4),1,2,5,4]);
 
@@ -775,11 +775,11 @@ end
 @doc raw"""
 ISP(G::labeledgraph)
 
-\textbf{USAGE}:  ISP(G);
-\textbf{ASSUME}: G is a labeled graph.
-\text{RETURN}: idal containing the irreducible scalar products(ISPs), that is, those scalar product which are not linearly dependent on the propagators.
+**USAGE**:  ISP(G)
+**ASSUME**: G is a labeled graph.
+**RETURN**: idal containing the irreducible scalar products(ISPs), that is, those scalar product which are not linearly dependent on the propagators.
 
-\textbf{#Examples}
+**#Examples**
 ```julia
 julia> G=simple_graph([1,2,3,4,5,6],[(1,2),(3,6),(4,5),(1,6),(2,3),(5,6),(3,4),1,2,5,4]);
 
