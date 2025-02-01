@@ -1,27 +1,23 @@
-name: Documentation
-
+name: Documenter
 on:
   push:
     branches:
       - main
+      - dev_new
+    tags: ['*']
   pull_request:
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Julia
-        uses: julia-actions/setup-julia@v1
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v1
         with:
-          version: 1.10.8  # Ensure this matches your CI version
-
-      - name: Install Dependencies
-        run: |
-          julia --project=docs -e 'using Pkg; Pkg.instantiate()'
-
-      - name: Build Documentation
-        run: |
-          julia --project=docs -e 'using Pkg; Pkg.add("Documenter"); include("docs/make.jl")'
-
+          version: '^1.6'
+      - uses: julia-actions/cache@v1
+      - name: Install dependencies
+        run: julia --color=yes --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+      - name: Build and deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
+        run: julia --color=yes --project=docs/ docs/make.jl
