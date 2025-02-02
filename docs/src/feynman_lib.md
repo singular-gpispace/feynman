@@ -1,5 +1,5 @@
 # `printGraph` Function
 
 **Usage:**  
-```singular
+```Singular
 printGraph(G);
