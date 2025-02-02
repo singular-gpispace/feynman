@@ -37,6 +37,9 @@ makedocs(;
             "Examples" => [
                 "Example_sing.md",
             ],
+            "Functions" => [
+                "Functions_sing.md"
+            ],
         ],
     ],
 )
