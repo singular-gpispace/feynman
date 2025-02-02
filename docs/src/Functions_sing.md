@@ -31,7 +31,7 @@ printMat(M);
 ```@raw html
 <details>
 <summary>procedure: printGraph(graph G)</summary>
-
+```
 **USAGE**   :  printGraph(G); G graph
 
 **ASSUME**  :  G is a graph.
@@ -45,13 +45,14 @@ printMat(M);
 graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),list(1),list(2),list(3),list(4)));
 G;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: printLabeledGraph(labeledgraph G)</summary>
-
+```
 **USAGE**   :  printLabeledGraph(G); G labeledgraph
 
 **ASSUME**  :  G is a labeled graph.
@@ -66,13 +67,14 @@ ring R=(0),q(1..6),dp;
 labeledgraph G = makeLabeledGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,2),list(2,4),list(3,4),list(3,4)),R, list (q(1),q(2),q(3),q(4),q(5),q(6)),R);
 G;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: printIBP(oneIBP I)</summary>
-
+```
 **USAGE**   :  printIBP(I); I oneIBP
 
 **ASSUME**  :  I is an IBP identity computed using computeIBP.
@@ -85,13 +87,14 @@ G;
 ```singular
 
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: printsetIBP(setIBP I)</summary>
-
+```
 **USAGE**   :  printIBP(I); I setIBP
 
 **ASSUME**  :  I is the set of IBP identities computed using computeIBP.
@@ -104,13 +107,14 @@ G;
 ```singular
 
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: makeGraph(list v, list e)</summary>
-
+```
 **USAGE**   :  makeGraph(v,e); v list, e list
 
 **ASSUME**  :  v is a list of integers, e is a list of two element lists of v.
@@ -126,13 +130,14 @@ G;
 graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,2),list(2,4),list(3,4),list(3,4)));
 G;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: makeLabeledGraph(list v, list e, def R, list lab, def Rpoly)</summary>
-
+```
 **USAGE**   :  makeLabeledGraph(v,e,R,l,P); v list, e list, R ring, l list, P ring 
 
 **ASSUME**  :   v is a list of integers, e is a list of two element lists of pairwise 
@@ -151,13 +156,14 @@ ring R=(0),q(1..6),dp;
 labeledgraph G = makeLabeledGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,2),list(2,4),list(3,4),list(3,4)),R, list (q(1),q(2),q(3),q(4),q(5),q(6)),R);
 G;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: labelGraph(graph G, int ch)</summary>
-
+```
 **USAGE**   :  labelGraph(G); G graph
 
 **ASSUME**  :  G is a graph and ch is either zero or a prime.
@@ -176,13 +182,14 @@ graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),l
 labeledgraph lG = labelGraph(G,0);
 lG;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: balancingIdeal(labeledgraph G)</summary>
-
+```
 **USAGE**   :  balancingIdeal(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
@@ -202,13 +209,14 @@ setring R;
 ideal I = balancingIdeal(lG);
 I;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: eliminateVariables(labeledgraph G)</summary>
-
+```
 **USAGE**   :  eliminateVariables(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
@@ -226,13 +234,14 @@ graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),l
 labeledgraph lG = labelGraph(G,0);
 eliminateVariables(lG);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: removeVariable(def R, int j)</summary>
-
+```
 **USAGE**   :  removeVariable(R); R ring
 
 **ASSUME**  :   R is a polynomial ring
@@ -249,13 +258,14 @@ ring R=0,(x,y,z),(lp(2),dp(1));
 def S= removeVariable(R,2);
 S;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: removeParameter(def R, int j)</summary>
-
+```
 **USAGE**   :  removeParameter(R); R ring
 
 **ASSUME**  :   R is a polynomial ring
@@ -272,13 +282,14 @@ ring R=(0,p(1),p(2),p(3)),(x,y,z),(lp(2),dp(1));
 def S= removeParameter(R,2);
 S;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: substituteGraph(labeledgraph G, poly a, poly b)</summary>
-
+```
 **USAGE**   :   substituteGraph(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
@@ -293,13 +304,14 @@ S;
 ```singular
 
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: feynmanDenominators(labeledgraph G)</summary>
-
+```
 **USAGE**   :  feynmanDenominators(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
@@ -320,13 +332,14 @@ setring R;
 ideal I = feynmanDenominators(lGelim);
 I;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: propagators(labeledgraph G)</summary>
-
+```
 **USAGE**   :   propagators(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
@@ -347,13 +360,14 @@ setring R;
 ideal I = propagators(lGelim);
 I;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: ISP(labeledgraph G)</summary>
-
+```
 **USAGE**   :  ISP(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
@@ -376,13 +390,14 @@ setring R;
 R;
 ISP(G1);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: removeElimVars(labeledgraph G)</summary>
-
+```
 **USAGE**   :  removeElimVars(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
@@ -406,13 +421,14 @@ setring R;
 R;
 G2;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: computeBaikovMatrix(def G0)</summary>
-
+```
 **USAGE**   :  computeBaikovMatrix(G); G labeledgraph, or G graph
 
 **ASSUME**  :   G is a Graph, or
@@ -437,13 +453,14 @@ RB;
 matrix B = G1.baikovmatrix;
 printMat(B);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: computeM1(def G0)</summary>
-
+```
 **USAGE**   :  computeM1(G0); G labeledgraph, or G graph
 
 **ASSUME**  :   G is a Graph, or
@@ -466,13 +483,14 @@ RB;
 module ML=computeM1(G1);
 ML;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: computeM2(def G0,list Nu)</summary>
-
+```
 **USAGE**   :  computeM2(G,Nu); G labeledgraph, or G graph
 
 **ASSUME**  :   G is a Graph, or
@@ -498,13 +516,14 @@ M2;
 module M2=computeM2(G1, list(1,1,1,1,1,1,1,-5,0));
 M2;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: computeIBP(def G0,list Nu)</summary>
-
+```
 **USAGE**   :  computeIBP(G0,Nu); G labeledgraph, or G graph
 
 **ASSUME**  :   G is a Graph, or
@@ -531,13 +550,14 @@ S;
 oneIBP I=S.IBP[1];
 I;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: getSector(list l)</summary>
-
+```
 **USAGE**   :  getSector(l); l list
 
 **ASSUME**  :   l is a list of integer indices of a Feynman integral
@@ -555,13 +575,14 @@ list l=list(1,2,-3,-4,0,1);
 list s=getSector(l);
 s;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: listCombinations(list L,int r)</summary>
-
+```
 **USAGE**   :  listCombintions(L,r); L list, r int
 
 **ASSUME**  :   r is a positive integer such that r < size(L)
@@ -578,13 +599,14 @@ ring R=0,(x,y,z),dp;
 list L=listCombinations(list(1,2,3,4),3);
 L[1];
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: generateWebSectors(list seed)</summary>
-
+```
 **USAGE**   :   generateWebSectors(seed);seed list  
 
 **ASSUME**  :   seed is a list of integer values.
@@ -604,13 +626,14 @@ ring R=0,(x,y,z),dp;
 list l=list(1,-1,0,1,2,-2);
 list w=generateWebSectors(l);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: isSubList(list l1,list l2)</summary>
-
+```
 **USAGE**   :  isSubList(l1,l2); l1 list, l2 list
 
 **ASSUME**  :  l1 and l2 are list of positive integers
@@ -634,13 +657,14 @@ isSubList(l3,l1);
 isSubList(l1,l2);
 isSubList(l2,l4);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: getSectorMap(list L1,list L2)</summary>
-
+```
 **USAGE**   :  getSectorMap(L1,L2); L1 list, L2 list, sector
 
 **ASSUME**  :   L1 and L2 are lists of sectors where the lab field of each sector in both   
@@ -662,13 +686,14 @@ w1[1].sectorMap;
 list w2=getSectorMap(w[2],w[3]);
 w2[2].sectorMap;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: setSectorMap(list sectorWeb)</summary>
-
+```
 **USAGE**   :  setSectorMap(sectorWeb); sectorWeb list, sector
 
 **ASSUME**  :   sectorWeb is an output produced by the function @*generateWebSectors
@@ -687,13 +712,14 @@ list l=list(1,-1,0,1,2,-2);
 list w=generateWebSectors(l);
 list w1=setSectorMap(w);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: findSector(list sectorWeb, list currentPosition, list L)</summary>
-
+```
 **USAGE**   :  findSector(sectorWeb,currentPosition,L); sectorWeb list,currentPosition list,
                 L list,
 
@@ -724,13 +750,14 @@ list L=getSector(oneInt);
 def pos=findSector(w1,list(1,1),L[2]);
 pos;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: updateOneSector(list sectorWeb, list currentPosition,list oneInt)</summary>
-
+```
 **USAGE**   :   updateOneSector(sectorWeb,currentPosition,oneInt); sectorWeb list, sector 
 
 **ASSUME**  :   sectorWeb is an output produced by the function generateWebSectors, oneInt 
@@ -757,13 +784,14 @@ list L=getSector(oneInt);
 L[2];
 w2[3][2].lab;
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: updateWeb(list sectorWeb, list currentPosition,list setInt)</summary>
-
+```
 **USAGE**   :   updateWeb(sectorWeb,currentPosition,setInt); sectorWeb list, sector
 
 **ASSUME**  :   sectorWeb is an output produced by the function generateWebSectors, setInt 
@@ -827,13 +855,14 @@ list w3=updateWeb(web,list(1,1),masterAndTailIntgrals); //updateWeb returns a li
 web=w3[1];   
 size(web[1][1].targetInts);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: getHighestSectorIndex(list targetInt)</summary>
-
+```
 **USAGE**   :   pickHighestSector(targetInt); G is a list of list of integers of same length 
 
 **ASSUME**  :   targetInt is the list of target integrals
@@ -850,13 +879,14 @@ size(web[1][1].targetInts);
 ```singular
 
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: pickHighestSector(list targetInt)</summary>
-
+```
 **USAGE**   :   pickHighestSector(targetInt); G is a list of list of integers of same length
 
 **ASSUME**  :   targetInt is the list of target integrals 
@@ -879,13 +909,14 @@ list setInt=list(list(-1,1,2),list(1,1,-1),list(-1,0,-2)); //here we need more t
 list L=pickHighestSector(setInt);
 size(L);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: getSortMeasures(list l)</summary>
-
+```
 **USAGE**   :  getSortMeasures(l); l list, 
 
 **ASSUME**  :   l is a list of integers (i.e a seed). 
@@ -901,13 +932,14 @@ size(L);
 setInt=list(list(-1,1,2),list(1,1,-1),list(-1,0,-2),list(1,2,3)); 
 getSortMeasures(l);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: extractCoef(oneIBP I,list ind,list l)</summary>
-
+```
 **USAGE**   :  extractCoef(I,ind,l); I oneIBP,ind list,l list,
 
 **ASSUME**  :   ind is the output of getSortedIntegrals, and l is the list of values over 
@@ -939,13 +971,14 @@ list rowCorrespondToI=extractCoef(I,ind,list(1,2,9));
 
 rowCorrespondToI[82]; //output will be -14
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: setMat(setIBP S,list val, list ind)</summary>
-
+```
 **USAGE**   :  setMat(S,val); S setIBP,val list
 
 **ASSUME**  :  size(val)=npars(I.baikovover) and val list of integers and  ind is the output 
@@ -971,14 +1004,14 @@ setring R;
 list ind = getSortedIntegrals(S);
 matrix N=setMat(S,list(1,2,3),ind);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
-
 <details>
 <summary>procedure: getRedIBPs(setIBP S,int p)</summary>
-
+```
 **USAGE**   :   getRedIBPs(S,p); 
 
 **ASSUME**  :   S is setIBP, and p is a prime number. 
@@ -1002,13 +1035,14 @@ setring R;
 list L=getRedIBPs(S,101);
 size(L[1])<size(S.IBP);
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: getSortedIntegrals(setIBP I)</summary>
-
+```
 **USAGE**   :  getSortedIntegrals(I); I setIBP,
 
 **ASSUME**  :
@@ -1035,13 +1069,14 @@ setring R;
 list L=getSortedIntegrals(S); //L list of pair of sorted integrals and the corresponding sorting measures
 L[1];
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: computeManyIBP(def G0,list setNu)</summary>
-
+```
 **USAGE**   :  computeManyIBP(G0,setNu); G0 graph,
 
 **ASSUME**  :   setNu is a list of seeds correspond to the graph G0 which are belong to the 
@@ -1071,13 +1106,14 @@ size(IBP2.IBP);
 setIBP S=computeManyIBP(G,list(list(1,1,0,1,0,1,0,-1,0),list(1,1,0,1,0,1,0,-3,0)));
 size(S.IBP); 
 ```
+```@raw html
 </details>
 ```
 
 ```@raw html
 <details>
 <summary>procedure: getReducedIBPSystem(graph G,list targetInt )</summary>
-
+```
 **USAGE**   :  getReducedIBPSystem(G,targetInt); targetInt list,G graph,
 
 **ASSUME**  :   G is a graph and targetInt is a list of seeds of target integrals.
@@ -1102,5 +1138,6 @@ oneIBP I=S.IBP[5];
 I;
 size(finalset[2]);
 ```
+```@raw html
 </details>
 ```
