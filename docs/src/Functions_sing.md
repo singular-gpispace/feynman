@@ -5,10 +5,10 @@ CurrentModule = Feynman
 
 # FUNCTIONS
 
-```html
+```@raw html
 <details>
 <summary>procedure: printMat(matrix M)</summary>
-
+```
 **USAGE**   :  printMat(M); M matrix
 
 **ASSUME**  :  M is a matrix.
@@ -24,6 +24,7 @@ ring R=0,(x),lp;
 matrix M[2][3]=1,243,3,4,522222,6;
 printMat(M);
 ```
+```@raw html
 </details>
 ```
 
