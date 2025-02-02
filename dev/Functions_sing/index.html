@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>- · Feynman.jl</title><meta name="title" content="- · Feynman.jl"/><meta property="og:title" content="- · Feynman.jl"/><meta property="twitter:title" content="- · Feynman.jl"/><meta name="description" content="Documentation for Feynman.jl."/><meta property="og:description" content="Documentation for Feynman.jl."/><meta property="twitter:description" content="Documentation for Feynman.jl."/><meta property="og:url" content="https://singular-gpispace.github.io/Feynman.jl/Functions_sing/"/><meta property="twitter:url" content="https://singular-gpispace.github.io/Feynman.jl/Functions_sing/"/><link rel="canonical" href="https://singular-gpispace.github.io/Feynman.jl/Functions_sing/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">Feynman.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><span class="tocitem">Home</span><ul><li><a class="tocitem" href="../">Feynman</a></li><li><a class="tocitem" href="../Installation/">Installation</a></li></ul></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../Example/">Example : Fully massless nonplanar double pentagon</a></li></ul></li><li><span class="tocitem">Functions</span><ul><li><a class="tocitem" href="../Overview/">Overview</a></li></ul></li><li><span class="tocitem">Singular version of Feynman</span><ul><li><input class="collapse-toggle" id="menuitem-4-1" type="checkbox"/><label class="tocitem" for="menuitem-4-1"><span class="docs-label">Home</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../Installation_sing/">Installation</a></li><li><a class="tocitem" href="../Overview_sing/">-</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4-2" type="checkbox"/><label class="tocitem" for="menuitem-4-2"><span class="docs-label">Examples</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../Example_sing/">Example : Fully massless planar double box</a></li></ul></li><li><input class="collapse-toggle" id="menuitem-4-3" type="checkbox" checked/><label class="tocitem" for="menuitem-4-3"><span class="docs-label">Functions</span><i class="docs-chevron"></i></label><ul class="collapsed"><li class="is-active"><a class="tocitem" href>-</a><ul class="internal"><li><a class="tocitem" href="#Feynman.lib-function-description"><span>Feynman.lib function description</span></a></li></ul></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Singular version of Feynman</a></li><li><a class="is-disabled">Functions</a></li><li class="is-active"><a href>-</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>-</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/singular-gpispace/Feynman" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/singular-gpispace/Feynman/blob/main/docs/src/Functions_sing.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h2 id="Feynman.lib-function-description"><a class="docs-heading-anchor" href="#Feynman.lib-function-description">Feynman.lib function description</a><a id="Feynman.lib-function-description-1"></a><a class="docs-heading-anchor-permalink" href="#Feynman.lib-function-description" title="Permalink"></a></h2><p>&lt;details&gt; &lt;summary&gt;procedure: printMat(matrix M)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  printMat(M); M matrix@* <strong>ASSUME</strong>  :  M is a matrix. <strong>THEORY</strong>  :  This is the print function used by Singular to print a matrix. <strong>KEYWORDS</strong>: matrix <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x),lp;
+matrix M[2][3]=1,243,3,4,522222,6;
+printMat(M);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: printGraph(graph G)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  printGraph(G); G graph@* <strong>ASSUME</strong>  :  G is a graph. <strong>THEORY</strong>  :  This is the print function used by Singular to print a graph. <strong>KEYWORDS</strong>:  graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),list(1),list(2),list(3),list(4)));
+G;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: printLabeledGraph(labeledgraph G)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  printLabeledGraph(G); G labeledgraph@* <strong>ASSUME</strong>  :  G is a labeled graph. <strong>THEORY</strong>  :  This is the print function used by Singular to print a labeled graph. <strong>KEYWORDS</strong>:  Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=(0),q(1..6),dp;
+labeledgraph G = makeLabeledGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,2),list(2,4),list(3,4),list(3,4)),R, list (q(1),q(2),q(3),q(4),q(5),q(6)),R);
+G;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: printIBP(oneIBP I)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  printIBP(I); I oneIBP@* <strong>ASSUME</strong>  :  I is an IBP identity computed using computeIBP. <strong>THEORY</strong>  :  This is the print function used by Singular to print an IBP relation. <strong>KEYWORDS</strong>:  Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs"></code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: printsetIBP(setIBP I)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  printIBP(I); I setIBP@* <strong>ASSUME</strong>  :  I is the set of IBP identities computed using computeIBP. <strong>THEORY</strong>  :  This is the print function used by Singular to print setIBP. <strong>KEYWORDS</strong>:  Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs"></code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: makeGraph(list v, list e)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  makeGraph(v,e); v list, e list@* <strong>ASSUME</strong>  :  v is a list of integers, e is a list of two element lists of v. <strong>RETURN</strong>  :  graph with vertices v and edges e <strong>THEORY</strong>  :  Creates a graph from a list of vertices and edges. The vertices can be any                    type. The data structure respects the ordering of vertices of edges, so can be used for directed graphs, <strong>KEYWORDS</strong>:   graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,2),list(2,4),list(3,4),list(3,4)));
+G;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: makeLabeledGraph(list v, list e, def R, list lab, def Rpoly)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  makeLabeledGraph(v,e,R,l,P); v list, e list, R ring, l list, P ring @* <strong>ASSUME</strong>  :   v is a list of integers, e is a list of two element lists of pairwise                  different elements of v, R is a ring, l is a list of labels, P is a ring <strong>RETURN</strong>  :   labeled graph with vertices v and edges e with labels of the edges in R with                  infinite edges being constants <strong>THEORY</strong>  :    <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=(0),q(1..6),dp;
+labeledgraph G = makeLabeledGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,2),list(2,4),list(3,4),list(3,4)),R, list (q(1),q(2),q(3),q(4),q(5),q(6)),R);
+G;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: labelGraph(graph G, int ch)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  labelGraph(G); G graph@* <strong>ASSUME</strong>  :  G is a graph and ch is either zero or a prime. <strong>RETURN</strong>  :  labeled graph with polynomial variables q<em>i at the bounded edges and function                  field variables p</em>i at the unbounded edges over a prime field of                  characteristic ch <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),list(1),list(2),list(3),list(4)));
+labeledgraph lG = labelGraph(G,0);
+lG;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: balancingIdeal(labeledgraph G)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  balancingIdeal(G); G labeledgraph@* <strong>ASSUME</strong>  :   G is a labeled graph <strong>RETURN</strong>  :  ideal of balancing condition of the graph, basering is assumed to be G.over <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),list(1),list(2),list(3),list(4)));
+labeledgraph lG = labelGraph(G,0);
+def R= lG.over;
+setring R;
+ideal I = balancingIdeal(lG);
+I;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: eliminateVariables(labeledgraph G)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  eliminateVariables(G); G labeledgraph@* <strong>ASSUME</strong>  :   G is a labeled graph <strong>RETURN</strong>  :  labeled graph with variables of the bounded edges eliminated according to                  balancing condition and using an ordering <span>$q[i]&gt;p[j]$</span>. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),list(1),list(2),list(3),list(4)));
+labeledgraph lG = labelGraph(G,0);
+eliminateVariables(lG);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: removeVariable(def R, int j)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  removeVariable(R); R ring@* <strong>ASSUME</strong>  :   R is a polynomial ring <strong>RETURN</strong>  :   polynomial ring with j-th variable removed <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   ring <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x,y,z),(lp(2),dp(1));
+def S= removeVariable(R,2);
+S;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: removeParameter(def R, int j)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  removeParameter(R); R ring@* <strong>ASSUME</strong>  :   R is a polynomial ring <strong>RETURN</strong>  :  polynomial ring with j-th variable removed <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   ring <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=(0,p(1),p(2),p(3)),(x,y,z),(lp(2),dp(1));
+def S= removeParameter(R,2);
+S;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: substituteGraph(labeledgraph G, poly a, poly b)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :   substituteGraph(G); G labeledgraph@* <strong>ASSUME</strong>  :   G is a labeled graph <strong>RETURN</strong>  :   substitute the variable a in the labeling by b <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs"></code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: feynmanDenominators(labeledgraph G)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  feynmanDenominators(G); G labeledgraph@* <strong>ASSUME</strong>  :   G is a labeled graph <strong>RETURN</strong>  :   ideal containing the propagators in the Feynman integral <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),list(1),list(2),list(3),list(4)));
+labeledgraph lG = labelGraph(G,0);
+labeledgraph lGelim = eliminateVariables(lG);
+def R = lGelim.over;
+setring R;
+ideal I = feynmanDenominators(lGelim);
+I;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: propagators(labeledgraph G)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :   propagators(G); G labeledgraph@* <strong>ASSUME</strong>  :   G is a labeled graph <strong>RETURN</strong>  :   ideal, containing the denominators in the Feynman integral <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph  <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),list(1),list(2),list(3),list(4)));
+labeledgraph lG = labelGraph(G,0);
+labeledgraph lGelim = eliminateVariables(lG);
+def R = lGelim.over;
+setring R;
+ideal I = propagators(lGelim);
+I;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: ISP(labeledgraph G)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  ISP(G); G labeledgraph@* <strong>ASSUME</strong>  :   G is a labeled graph <strong>RETURN</strong>  :  ideal, containing the irreducible scalar products, that is, those scalar                  product which are not linearly dependent on the propagators. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(1,2),list(3,6),list(4,5),list(1,6),list(2,3),list(5,6),list(3,4),list(1),list(2),list(5),list(4)));
+labeledgraph lG = labelGraph(G,0);
+labeledgraph G1 = eliminateVariables(lG);
+G1;
+ring R= G1.over;
+setring R;
+R;
+ISP(G1);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: removeElimVars(labeledgraph G)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  removeElimVars(G); G labeledgraph@* <strong>ASSUME</strong>  :   G is a labeled graph <strong>RETURN</strong>  :  Removes the variables from G.elimvars. This key is generated by the procedure                  eliminateVariables. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(1,2),list(3,6),list(4,5),list(1,6),list(2,3),list(5,6),list(3,4),list(1),list(2),list(5),list(4)));
+labeledgraph lG = labelGraph(G,0);
+labeledgraph G1 = eliminateVariables(lG);
+labeledgraph G2 = removeElimVars(G1);
+G2;
+ring R= G2.over;
+setring R;
+R;
+G2;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: computeBaikovMatrix(def G0)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  computeBaikovMatrix(G); G labeledgraph, or G graph@* <strong>ASSUME</strong>  :   G is a Graph, or@*                 G is a labeled graph where redundant variables have been eliminated by                  the procedure eliminateVariables, and deleted from the ring by the                  procedure removeElimVars. <strong>RETURN</strong>  :   a labeled graph G1, computes the Baikov matrix of G defined in G1.baikovover                  and stores it in G1.baikovmatrix <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :   </p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+ring RB= G1.baikovover;
+setring RB;
+RB;
+matrix B = G1.baikovmatrix;
+printMat(B);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: computeM1(def G0)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  computeM1(G0); G labeledgraph, or G graph@* <strong>ASSUME</strong>  :   G is a Graph, or@*                 G is a labeled graph where redundant variables have been eliminated by                  the procedure eliminateVariables, and deleted from the ring by the                  procedure removeElimVars. <strong>RETURN</strong>  :   The module M1 over G1.baikovover that requires to compute IBP identities  <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+ring RB=G1.baikovover;
+RB;
+module ML=computeM1(G1);
+ML;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: computeM2(def G0,list Nu)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  computeM2(G,Nu); G labeledgraph, or G graph@* <strong>ASSUME</strong>  :   G is a Graph, or@*                 G is a labeled graph where redundant variables have been eliminated by                  the procedure eliminateVariables, and deleted from the ring by the                  procedure removeElimVars.                 Nu is the seed. <strong>RETURN</strong>  :   The module M2 over G1.baikovover that requires to compute IBP identities   <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+ring RB=G1.baikovover;
+RB;
+module M2=computeM2(G1,list(1,1,1,0,0,1,0,0,0));
+M2;
+module M2=computeM2(G1, list(1,1,1,1,1,1,1,-5,0));
+M2;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: computeIBP(def G0,list Nu)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  computeIBP(G0,Nu); G labeledgraph, or G graph@* <strong>ASSUME</strong>  :   G is a Graph, or@*                 G is a labeled graph where redundant variables have been eliminated by                  the procedure eliminateVariables, and deleted from the ring by the                  procedure removeElimVars.                 Nu is the seed. <strong>RETURN</strong>  :   The set of IBPS correspond to G0 and given Nu. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
+ring R=S.over;
+setring R;
+S;
+oneIBP I=S.IBP[1];
+I;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: getSector(list l)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  getSector(l); l list@* <strong>ASSUME</strong>  :   l is a list of integer indices of a Feynman integral <strong>RETURN</strong>  :   list L, L[1]=s The sector (a list of 1s and 0s) that the corresponding                       integral belongs L[2]=n The sector in that the integral belongs  <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">list l=list(1,2,-3,-4,0,1);
+list s=getSector(l);
+s;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: listCombinations(list L,int r)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  listCombintions(L,r); L list, r int@* <strong>ASSUME</strong>  :   r is a positive integer such that r &lt; size(L)&gt; <strong>RETURN</strong>  :   list of r-combinations of the elements in the list L <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x,y,z),dp;
+list L=listCombinations(list(1,2,3,4),3);
+L[1];</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: generateWebSectors(list seed)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :   generateWebSectors(seed);seed list@*   <strong>ASSUME</strong>  :   seed is a list of integer values. <strong>RETURN</strong>  :   Web structure of the sectors L, where L is the list and L[1] is the sector                   that correspond to the  given seed and L[i] contain the subsectors of the                  sectors in L[i-1]. Note that sector maps between the sectors have not been                  setted.  <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x,y,z),dp;
+list l=list(1,-1,0,1,2,-2);
+list w=generateWebSectors(l);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: isSubList(list l1,list l2)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  isSubList(l1,l2); l1 list, l2 list@* <strong>ASSUME</strong>  :  l1 and l2 are list of positive integers <strong>RETURN</strong>  :  1 if elements in l1 contain in l2                 0 if elements in l1 do not contain in l2 <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x,y,z),dp;
+list l1=list(1,2,3,4,5,6,7);
+list l2=list(1,4,6);
+list l3=list(1,2,8);
+list l4=list(1,4,6);
+isSubList(l2,l1);
+isSubList(l3,l1);
+isSubList(l1,l2);
+isSubList(l2,l4);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: getSectorMap(list L1,list L2)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  getSectorMap(L1,L2); L1 list, L2 list, sector@* <strong>ASSUME</strong>  :   L1 and L2 are lists of sectors where the lab field of each sector in both                    lists are filled(i.e. two layers of a sector web) <strong>RETURN</strong>  :   L1 where sectorMap  of each sector in the list L1 is filled. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   sector,graph,feynman,setIBP <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x,y,z),dp;
+list l=list(1,-1,0,1,2,-2);
+list w=generateWebSectors(l);
+list w1=getSectorMap(w[1],w[2]);
+w1[1].sectorMap;
+list w2=getSectorMap(w[2],w[3]);
+w2[2].sectorMap;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: setSectorMap(list sectorWeb)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  setSectorMap(sectorWeb); sectorWeb list, sector@* <strong>ASSUME</strong>  :   sectorWeb is an output produced by the function @*generateWebSectors <strong>RETURN</strong>  :  sectorWeb where the field sectorMap field of each sector in sectorWeb is                  filled. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   sector, generateWebSectors, getSectorMap <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x,y,z),dp;
+list l=list(1,-1,0,1,2,-2);
+list w=generateWebSectors(l);
+list w1=setSectorMap(w);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: findSector(list sectorWeb, list currentPosition, list L)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  findSector(sectorWeb,currentPosition,L); sectorWeb list,currentPosition list,                 L list, <strong>ASSUME</strong>  :   sectorWeb is an output produced by the function generateWebSectors@*, L is                  an output produced by the function getSector@ <strong>RETURN</strong>  :   position of the sector in the sectorWeb, where the L belongs.                  -1, if the sector is not found <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   sector, generateWebSectors, getSectorMap <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x,y,z),dp;
+list l=list(1,-1,0,1,2,-2);
+list w=generateWebSectors(l);
+list w1=setSectorMap(w);
+list oneInt=list(4,-1,-1,0,-1,-2);
+list L=getSector(oneInt);
+def pos=findSector(w1,list(1,1),L[2]);
+isSubList(w[pos[1]][pos[2]].lab,L[2])==1 &amp;&amp; isSubList(L[2],w[pos[1]][pos[2]].lab); //this returns 1, since the given integral is in the sector at pos.
+
+//example for a integral that is not in the set
+list oneInt=list(4,1,0,-1,-2,3);
+list L=getSector(oneInt);
+def pos=findSector(w1,list(1,1),L[2]);
+pos;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: updateOneSector(list sectorWeb, list currentPosition,list oneInt)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :   updateOneSector(sectorWeb,currentPosition,oneInt); sectorWeb list, sector@*  <strong>ASSUME</strong>  :   sectorWeb is an output produced by the function generateWebSectors@*, oneInt                  is a list of indeces of the denominators associated to an integral                  correspond to a given feynman graph. Also assume the sectorweb isalso                   associated to the same feynman graph. <strong>RETURN</strong>  :   updated sectorWeb, where the oneInt is assigned to the targetInts field of                  the seector correspond to provided oneInt <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   sector, generateWebSectors, getSectorMap,updateWeb,findSector <strong>Example</strong> :</p><pre><code class="language-singular hljs">ring R=0,(x,y,z),dp;
+list l=list(1,-1,0,1,2,-2);
+list w=generateWebSectors(l);
+list w1=setSectorMap(w);
+list oneInt=list(4,-1,-1,0,-1,-2);
+list w2=updateOneSector(w1,list(1,1),oneInt);
+list L=getSector(oneInt);
+L[2];
+w2[3][2].lab;</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: updateWeb(list sectorWeb, list currentPosition,list setInt)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :   updateWeb(sectorWeb,currentPosition,setInt); sectorWeb list, sector@* <strong>ASSUME</strong>  :   sectorWeb is an output produced by the function generateWebSectors@*, setInt                  is a list of indeces of the denominators associated to  integrals correspond                  to a given feynman graph. Also assume the sectorweb is also  associated to                  the same feynman graph. <strong>RETURN</strong>  :   list (sectorWeb,MasterInt,notInWeb) where,                 sectorWeb is the updated web by assingning integrals to correspondng sectors,                 masterInt is the list integrals belong to the sector at currentPosition                 notInWeb is the list of integrals that are not belong the integral family                  associated the SectorWeb. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   generateWebSectors, getSector,findSector <strong>Example</strong> : <strong>Example 1:</strong></p><pre><code class="language-singular hljs">ring R=(0,(t,D)),(x,y,z),dp;
+list l=list(1,2,1);
+list w=generateWebSectors(l);
+list w1=setSectorMap(w);
+list setInt=list(list(1,2,3),list(-1,1,2),list(1,1,-1),list(-1,0,-2));
+list setInt=list(list(1,2,3));
+list setInt=list(l);
+  
+list L1=pickHighestSector(setInt);
+list w2=updateWeb(w1,list(1,1),L1[1]);
+w2[2]; //master integrals
+w2[3];//integrals not in the web</code></pre><p><strong>Example 2:</strong></p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+ring RZ= G1.baikovover;
+printMat(G1.baikovmatrix);
+  
+list setInt=list(list(1,1,1,-1,-3,1,-1,-1,-1),list(1,-1,1,-1,-3,-1,-1,-4,-1));
+list web=generateWebSectors(setInt[1]);
+list w1=setSectorMap(web); 
+web=w1;
+list L1=pickHighestSector(setInt);  
+  
+list w2=updateWeb(web,list(1,1),L1[1]); //updateWeb returns a list w3 with w3[1]=sectorWeb,w3[2]=list of master Integrals, w3[3]=list of integrals that not belong to the current web
+web=w2[1]; 
+setIBP S=computeIBP(G1,L1[1][1]);
+ring R=S.over;
+setring R;
+list L=getRedIBPs(S,101); //L[1]=list of independent IBPs,L[2]=list of master integrals
+list independIBPs=L[1];
+list masterAndTailIntgrals=L[2];
+size(independIBPs) &lt; size(S.IBP); //number of linearly independent set of IBPs are less than the number of orginal IBPs. So this returns true
+  
+oneIBP I1=independIBPs[18];     //Here is an example for one IBP i
+I1;
+list w3=updateWeb(web,list(1,1),masterAndTailIntgrals); //updateWeb returns a list w3 with w3[1]=sectorWeb,w3[2]=list of master Integrals, w3[3]=list of integrals that not belong to the current web
+web=w3[1];   
+size(web[1][1].targetInts);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: getHighestSectorIndex(list targetInt)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :   pickHighestSector(targetInt); G is a list of list of integers of same length  <strong>ASSUME</strong>  :   targetInt is the list of target integrals <strong>RETURN</strong>  :   the intgral that belong to the heighest sector, if all integrals belong to                  the same sector web; otherwise, it returns a list of collection of integrals                  each need to be handled using different sector webs, <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs"></code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: pickHighestSector(list targetInt)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :   pickHighestSector(targetInt); G is a list of list of integers of same length <strong>ASSUME</strong>  :   targetInt is the list of target integrals  <strong>RETURN</strong>  :   the intgral that belong to the heighest sector, if all integrals belong to              the same sector web; otherwise, it returns a list of collection of integrals                  each need to be handled using different sector webs, <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">setInt=list(list(-1,1,2),list(1,1,-1),list(-1,0,-2),list(1,2,3)); //here we can do the reduction using one web
+list L=pickHighestSector(setInt);
+size(L);
+
+list setInt=list(list(-1,1,2),list(1,1,-1),list(-1,0,-2)); //here we need more than one web
+list L=pickHighestSector(setInt);
+size(L);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: getSortMeasures(list l)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  getSortMeasures(l); l list,  <strong>ASSUME</strong>  :   l is a list of integers (i.e a seed).  <strong>RETURN</strong>  :   list of sort measures that are used in Laporta Algorithm <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph <strong>Example</strong> :</p><pre><code class="language-singular hljs">setInt=list(list(-1,1,2),list(1,1,-1),list(-1,0,-2),list(1,2,3)); 
+getSortMeasures(l);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: extractCoef(oneIBP I,list ind,list l)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  extractCoef(I,ind,l); I oneIBP,ind list,l list, <strong>ASSUME</strong>  :   ind is the output of getSortedIntegrals, and l is the list of values over                  the base field I.baikovover and size(l)=npars(I.baikovover) <strong>RETURN</strong>  :  list of values where, the i-th element is the evaluation of coefficient                  function  at values in the list l of the IBP relation oneIBP, whose index is                  i=ind[i][1]. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   feynman graph,IBPs <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
+ring R=S.over;
+setring R;
+list ind = getSortedIntegrals(S);
+oneIBP I=S.IBP[1];
+I;
+list rowCorrespondToI=extractCoef(I,ind,list(1,2,9)); 
+  
+// the nonzero coefficient of the IBP relation correspond to integral I(1,1,0,1,0,0,0,1,0).
+// when we use lex ordering to order the used integrals in set of IBPs, this integral correspond to the 82th place.
+// so we get only a nonzero value at position 82 and the below, the output will be -14.
+
+rowCorrespondToI[82]; //output will be -14</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: setMat(setIBP S,list val, list ind)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  setMat(S,val); S setIBP,val list <strong>ASSUME</strong>  :  size(val)=npars(I.baikovover) and val list of integers and  ind is the output                  of getSortedIntegrals(S) <strong>RETURN</strong>  :  atrix,where i-th row correspond to the evaluation of coefficient functions of                  i-th IBP in setIBP. Columns of the matrix correspond to the all used indices                  in the setIBP which are ordered with respect to the output                  ofgetSortMeasures.  <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   feynman graph,IBPs <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
+ring R=S.over;
+setring R;
+list ind = getSortedIntegrals(S);
+matrix N=setMat(S,list(1,2,3),ind);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: getRedIBPs(setIBP S,int p)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :   getRedIBPs(S,p);  <strong>ASSUME</strong>  :   S is setIBP, and p is a prime number.  <strong>RETURN</strong>  :   list L, L[1]=indIBP, L[2]=seed where,                 indIBP contain the linearly independent IBP relations of setIBP which are                  obtained by finite field row reduction over the field Fp.                  seed contain the indeces correspond to the non-free columns in rref. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   feynman graph,IBPs <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
+ring R=S.over;
+setring R;
+list L=getRedIBPs(S,101);
+size(L[1])&lt;size(S.IBP);</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: getSortedIntegrals(setIBP I)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  getSortedIntegrals(I); I setIBP, <strong>ASSUME</strong>  : <strong>RETURN</strong>  :  list ind where each entry is a pair (indv,sortmeasures),                 indv is the list of indices(seed) appered in the setIBP                  and sortmeasures is the output of getSortMeasures(indv).                 The function getSortedIntegrals extract the seeds appeared in the IBP                  identities of the setIBP,                 sort them lexicographically based on the values got from getSortMeasures and                  return the output. <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:  <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+setIBP S=computeIBP(G1,list(1,1,0,1,0,1,0,1,0));
+ring R=S.over;
+setring R;
+list L=getSortedIntegrals(S); //L list of pair of sorted integrals and the corresponding sorting measures
+L[1];</code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: computeManyIBP(def G0,list setNu)&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  computeManyIBP(G0,setNu); G0 graph@*, <strong>ASSUME</strong>  :   setNu is a list of seeds correspond to the graph G0 which are belong to the                  same sector  <strong>RETURN</strong>  :   setIBP S, where it contains all the IBP relations obtained by module                     intersection and seeding  <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:  <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+labeledgraph G1=computeBaikovMatrix(G);
+
+//here we compute set of IBPs correspond to two seeds seperately
+setIBP IBP1=computeIBP(G1,list(1,1,0,1,0,1,0,-1,0));
+setIBP IBP2=computeIBP(G1,list(1,1,0,1,0,1,0,-3,0));
+size(IBP1.IBP);
+size(IBP2.IBP);
+  
+//here we compute set of IBPs correspond both seeds simultaneously 
+//We can use this only when both integrals belongs to the same sector
+
+setIBP S=computeManyIBP(G,list(list(1,1,0,1,0,1,0,-1,0),list(1,1,0,1,0,1,0,-3,0)));
+size(S.IBP); </code></pre><p>&lt;/details&gt;</p><p>&lt;details&gt; &lt;summary&gt;procedure: getReducedIBPSystem(graph G,list targetInt )&lt;/summary&gt;</p><p><strong>USAGE</strong>   :  getReducedIBPSystem(G,targetInt); targetInt list,G graph@*, <strong>ASSUME</strong>  :   G is a graph and targetInt is a list of seeds of target integrals. <strong>RETURN</strong>  :  ist (reducedIBPs,MI) where  reducedIBPs::setIBP, MI::list.                 reducedIBPs contain the reduced IBP system for the target integrals                 MI contain the master integrals <strong>THEORY</strong>  :   <strong>KEYWORDS</strong>:   Feynman graph,IBPs <strong>Example</strong> :</p><pre><code class="language-singular hljs">graph G = makeGraph(list(1,2,3,4,5,6),list(list(6,1),list(4,6),list(1,2),list(3,5),list(4,3),list(2,5),list(5,6),list(1),list(2),list(3),list(4)));
+list targetInt=list(list(1,1,1,-1,-3,-1,-1,-1,-1),list(1,-1,1,-1,-3,-1,-1,-4,-1));
+list finalset=getReducedIBPSystem(G,targetInt);
+setIBP S=finalset[1];
+ring R=S.over;
+setring R;
+oneIBP I=S.IBP[5];
+I;
+size(finalset[2]);</code></pre><p>&lt;/details&gt;</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../Example_sing/">« Example : Fully massless planar double box</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.4.1 on <span class="colophon-date" title="Sunday 2 February 2025 05:55">Sunday 2 February 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
