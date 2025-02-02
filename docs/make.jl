@@ -34,12 +34,10 @@ makedocs(;
                 "Installation_sing.md",
                 "Overview_sing.md",
             ],
-            "Examples" => [
-                "Example_sing.md",
-            ],
-            "Functions" => [
-                "Functions_sing.md",
-            ],
+            "Examples" =>  "Example_sing.md",
+    
+            "Functions" =>  "Functions_sing.md",
+            
         ],
     ],
 )
