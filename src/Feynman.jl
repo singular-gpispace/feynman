@@ -30,24 +30,9 @@ export Net
 export simple_graph
 export labeledgraph
 export computeM1
-export enumerateTerms
-export Heviside
 export IBP
-export power_monomials
-export generating_probes
-export oneRR
-export manyRR
-export pickDen
-export evaluateBB
-export pickWeights
-export numeratorAnsatz
-export interpolateAnsatz
-export getWeights
-export setBB
-export getCandidateDenominators
-export getIndDen
-export interpolateAnsatzTemp
-export computeCoef
+
+
  include("Functions.jl")
  #include("DataTypes.jl")
 # Write your package code here.
