@@ -5,11 +5,11 @@ CurrentModule = Feynman
 
 # FUNCTIONS
 
-
+```@raw html
 <details>
 <summary>procedure: printMat(matrix M)</summary>
 
-**USAGE**   :  printMat(M); M matrix@*
+**USAGE**   :  printMat(M); M matrix
 
 **ASSUME**  :  M is a matrix.
 
@@ -24,11 +24,13 @@ matrix M[2][3]=1,243,3,4,522222,6;
 printMat(M);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: printGraph(graph G)</summary>
 
-**USAGE**   :  printGraph(G); G graph@*
+**USAGE**   :  printGraph(G); G graph
 
 **ASSUME**  :  G is a graph.
 
@@ -42,11 +44,13 @@ graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(2,4),list(3,4),l
 G;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: printLabeledGraph(labeledgraph G)</summary>
 
-**USAGE**   :  printLabeledGraph(G); G labeledgraph@*
+**USAGE**   :  printLabeledGraph(G); G labeledgraph
 
 **ASSUME**  :  G is a labeled graph.
 
@@ -61,11 +65,13 @@ labeledgraph G = makeLabeledGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,
 G;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: printIBP(oneIBP I)</summary>
 
-**USAGE**   :  printIBP(I); I oneIBP@*
+**USAGE**   :  printIBP(I); I oneIBP
 
 **ASSUME**  :  I is an IBP identity computed using computeIBP.
 
@@ -78,11 +84,13 @@ G;
 
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: printsetIBP(setIBP I)</summary>
 
-**USAGE**   :  printIBP(I); I setIBP@*
+**USAGE**   :  printIBP(I); I setIBP
 
 **ASSUME**  :  I is the set of IBP identities computed using computeIBP.
 
@@ -95,11 +103,13 @@ G;
 
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: makeGraph(list v, list e)</summary>
 
-**USAGE**   :  makeGraph(v,e); v list, e list@*
+**USAGE**   :  makeGraph(v,e); v list, e list
 
 **ASSUME**  :  v is a list of integers, e is a list of two element lists of v.
 
@@ -115,11 +125,13 @@ graph G = makeGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,2),list(2,4),l
 G;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: makeLabeledGraph(list v, list e, def R, list lab, def Rpoly)</summary>
 
-**USAGE**   :  makeLabeledGraph(v,e,R,l,P); v list, e list, R ring, l list, P ring @*
+**USAGE**   :  makeLabeledGraph(v,e,R,l,P); v list, e list, R ring, l list, P ring 
 
 **ASSUME**  :   v is a list of integers, e is a list of two element lists of pairwise 
                 different elements of v, R is a ring, l is a list of labels, P is a ring
@@ -138,11 +150,13 @@ labeledgraph G = makeLabeledGraph(list(1,2,3,4),list(list(1,3),list(1,2),list(1,
 G;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: labelGraph(graph G, int ch)</summary>
 
-**USAGE**   :  labelGraph(G); G graph@*
+**USAGE**   :  labelGraph(G); G graph
 
 **ASSUME**  :  G is a graph and ch is either zero or a prime.
 
@@ -161,11 +175,13 @@ labeledgraph lG = labelGraph(G,0);
 lG;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: balancingIdeal(labeledgraph G)</summary>
 
-**USAGE**   :  balancingIdeal(G); G labeledgraph@*
+**USAGE**   :  balancingIdeal(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
 
@@ -185,11 +201,13 @@ ideal I = balancingIdeal(lG);
 I;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: eliminateVariables(labeledgraph G)</summary>
 
-**USAGE**   :  eliminateVariables(G); G labeledgraph@*
+**USAGE**   :  eliminateVariables(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
 
@@ -207,11 +225,13 @@ labeledgraph lG = labelGraph(G,0);
 eliminateVariables(lG);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: removeVariable(def R, int j)</summary>
 
-**USAGE**   :  removeVariable(R); R ring@*
+**USAGE**   :  removeVariable(R); R ring
 
 **ASSUME**  :   R is a polynomial ring
 
@@ -228,11 +248,13 @@ def S= removeVariable(R,2);
 S;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: removeParameter(def R, int j)</summary>
 
-**USAGE**   :  removeParameter(R); R ring@*
+**USAGE**   :  removeParameter(R); R ring
 
 **ASSUME**  :   R is a polynomial ring
 
@@ -249,11 +271,13 @@ def S= removeParameter(R,2);
 S;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: substituteGraph(labeledgraph G, poly a, poly b)</summary>
 
-**USAGE**   :   substituteGraph(G); G labeledgraph@*
+**USAGE**   :   substituteGraph(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
 
@@ -268,11 +292,13 @@ S;
 
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: feynmanDenominators(labeledgraph G)</summary>
 
-**USAGE**   :  feynmanDenominators(G); G labeledgraph@*
+**USAGE**   :  feynmanDenominators(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
 
@@ -293,11 +319,13 @@ ideal I = feynmanDenominators(lGelim);
 I;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: propagators(labeledgraph G)</summary>
 
-**USAGE**   :   propagators(G); G labeledgraph@*
+**USAGE**   :   propagators(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
 
@@ -318,11 +346,13 @@ ideal I = propagators(lGelim);
 I;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: ISP(labeledgraph G)</summary>
 
-**USAGE**   :  ISP(G); G labeledgraph@*
+**USAGE**   :  ISP(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
 
@@ -345,11 +375,13 @@ R;
 ISP(G1);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: removeElimVars(labeledgraph G)</summary>
 
-**USAGE**   :  removeElimVars(G); G labeledgraph@*
+**USAGE**   :  removeElimVars(G); G labeledgraph
 
 **ASSUME**  :   G is a labeled graph
 
@@ -373,13 +405,15 @@ R;
 G2;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: computeBaikovMatrix(def G0)</summary>
 
-**USAGE**   :  computeBaikovMatrix(G); G labeledgraph, or G graph@*
+**USAGE**   :  computeBaikovMatrix(G); G labeledgraph, or G graph
 
-**ASSUME**  :   G is a Graph, or@*
+**ASSUME**  :   G is a Graph, or
                 G is a labeled graph where redundant variables have been eliminated by 
                 the procedure eliminateVariables, and deleted from the ring by the 
                 procedure removeElimVars.
@@ -402,13 +436,15 @@ matrix B = G1.baikovmatrix;
 printMat(B);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: computeM1(def G0)</summary>
 
-**USAGE**   :  computeM1(G0); G labeledgraph, or G graph@*
+**USAGE**   :  computeM1(G0); G labeledgraph, or G graph
 
-**ASSUME**  :   G is a Graph, or@*
+**ASSUME**  :   G is a Graph, or
                 G is a labeled graph where redundant variables have been eliminated by 
                 the procedure eliminateVariables, and deleted from the ring by the 
                 procedure removeElimVars.
@@ -429,13 +465,15 @@ module ML=computeM1(G1);
 ML;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: computeM2(def G0,list Nu)</summary>
 
-**USAGE**   :  computeM2(G,Nu); G labeledgraph, or G graph@*
+**USAGE**   :  computeM2(G,Nu); G labeledgraph, or G graph
 
-**ASSUME**  :   G is a Graph, or@*
+**ASSUME**  :   G is a Graph, or
                 G is a labeled graph where redundant variables have been eliminated by 
                 the procedure eliminateVariables, and deleted from the ring by the 
                 procedure removeElimVars.
@@ -459,13 +497,15 @@ module M2=computeM2(G1, list(1,1,1,1,1,1,1,-5,0));
 M2;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: computeIBP(def G0,list Nu)</summary>
 
-**USAGE**   :  computeIBP(G0,Nu); G labeledgraph, or G graph@*
+**USAGE**   :  computeIBP(G0,Nu); G labeledgraph, or G graph
 
-**ASSUME**  :   G is a Graph, or@*
+**ASSUME**  :   G is a Graph, or
                 G is a labeled graph where redundant variables have been eliminated by 
                 the procedure eliminateVariables, and deleted from the ring by the 
                 procedure removeElimVars.
@@ -490,11 +530,13 @@ oneIBP I=S.IBP[1];
 I;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: getSector(list l)</summary>
 
-**USAGE**   :  getSector(l); l list@*
+**USAGE**   :  getSector(l); l list
 
 **ASSUME**  :   l is a list of integer indices of a Feynman integral
 
@@ -512,13 +554,15 @@ list s=getSector(l);
 s;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: listCombinations(list L,int r)</summary>
 
-**USAGE**   :  listCombintions(L,r); L list, r int@*
+**USAGE**   :  listCombintions(L,r); L list, r int
 
-**ASSUME**  :   r is a positive integer such that r < size(L)>
+**ASSUME**  :   r is a positive integer such that r < size(L)
 
 **RETURN**  :   list of r-combinations of the elements in the list L
 
@@ -533,11 +577,13 @@ list L=listCombinations(list(1,2,3,4),3);
 L[1];
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: generateWebSectors(list seed)</summary>
 
-**USAGE**   :   generateWebSectors(seed);seed list@*  
+**USAGE**   :   generateWebSectors(seed);seed list  
 
 **ASSUME**  :   seed is a list of integer values.
 
@@ -557,11 +603,13 @@ list l=list(1,-1,0,1,2,-2);
 list w=generateWebSectors(l);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: isSubList(list l1,list l2)</summary>
 
-**USAGE**   :  isSubList(l1,l2); l1 list, l2 list@*
+**USAGE**   :  isSubList(l1,l2); l1 list, l2 list
 
 **ASSUME**  :  l1 and l2 are list of positive integers
 
@@ -585,11 +633,13 @@ isSubList(l1,l2);
 isSubList(l2,l4);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: getSectorMap(list L1,list L2)</summary>
 
-**USAGE**   :  getSectorMap(L1,L2); L1 list, L2 list, sector@*
+**USAGE**   :  getSectorMap(L1,L2); L1 list, L2 list, sector
 
 **ASSUME**  :   L1 and L2 are lists of sectors where the lab field of each sector in both   
                 lists are filled(i.e. two layers of a sector web)
@@ -611,11 +661,13 @@ list w2=getSectorMap(w[2],w[3]);
 w2[2].sectorMap;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: setSectorMap(list sectorWeb)</summary>
 
-**USAGE**   :  setSectorMap(sectorWeb); sectorWeb list, sector@*
+**USAGE**   :  setSectorMap(sectorWeb); sectorWeb list, sector
 
 **ASSUME**  :   sectorWeb is an output produced by the function @*generateWebSectors
 
@@ -634,14 +686,16 @@ list w=generateWebSectors(l);
 list w1=setSectorMap(w);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: findSector(list sectorWeb, list currentPosition, list L)</summary>
 
 **USAGE**   :  findSector(sectorWeb,currentPosition,L); sectorWeb list,currentPosition list,
                 L list,
 
-**ASSUME**  :   sectorWeb is an output produced by the function generateWebSectors@*, L is 
+**ASSUME**  :   sectorWeb is an output produced by the function generateWebSectors, L is 
                 an output produced by the function getSector@
 
 **RETURN**  :   position of the sector in the sectorWeb, where the L belongs. 
@@ -669,13 +723,15 @@ def pos=findSector(w1,list(1,1),L[2]);
 pos;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: updateOneSector(list sectorWeb, list currentPosition,list oneInt)</summary>
 
-**USAGE**   :   updateOneSector(sectorWeb,currentPosition,oneInt); sectorWeb list, sector@* 
+**USAGE**   :   updateOneSector(sectorWeb,currentPosition,oneInt); sectorWeb list, sector 
 
-**ASSUME**  :   sectorWeb is an output produced by the function generateWebSectors@*, oneInt 
+**ASSUME**  :   sectorWeb is an output produced by the function generateWebSectors, oneInt 
                 is a list of indeces of the denominators associated to an integral 
                 correspond to a given feynman graph. Also assume the sectorweb isalso  
                 associated to the same feynman graph.
@@ -700,13 +756,15 @@ L[2];
 w2[3][2].lab;
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: updateWeb(list sectorWeb, list currentPosition,list setInt)</summary>
 
-**USAGE**   :   updateWeb(sectorWeb,currentPosition,setInt); sectorWeb list, sector@*
+**USAGE**   :   updateWeb(sectorWeb,currentPosition,setInt); sectorWeb list, sector
 
-**ASSUME**  :   sectorWeb is an output produced by the function generateWebSectors@*, setInt 
+**ASSUME**  :   sectorWeb is an output produced by the function generateWebSectors, setInt 
                 is a list of indeces of the denominators associated to  integrals correspond 
                 to a given feynman graph. Also assume the sectorweb is also  associated to 
                 the same feynman graph.
@@ -768,7 +826,9 @@ web=w3[1];
 size(web[1][1].targetInts);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: getHighestSectorIndex(list targetInt)</summary>
 
@@ -789,7 +849,9 @@ size(web[1][1].targetInts);
 
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: pickHighestSector(list targetInt)</summary>
 
@@ -816,7 +878,9 @@ list L=pickHighestSector(setInt);
 size(L);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: getSortMeasures(list l)</summary>
 
@@ -836,7 +900,9 @@ setInt=list(list(-1,1,2),list(1,1,-1),list(-1,0,-2),list(1,2,3));
 getSortMeasures(l);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: extractCoef(oneIBP I,list ind,list l)</summary>
 
@@ -872,7 +938,9 @@ list rowCorrespondToI=extractCoef(I,ind,list(1,2,9));
 rowCorrespondToI[82]; //output will be -14
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: setMat(setIBP S,list val, list ind)</summary>
 
@@ -902,7 +970,9 @@ list ind = getSortedIntegrals(S);
 matrix N=setMat(S,list(1,2,3),ind);
 ```
 </details>
+```
 
+```@raw html
 
 <details>
 <summary>procedure: getRedIBPs(setIBP S,int p)</summary>
@@ -931,7 +1001,9 @@ list L=getRedIBPs(S,101);
 size(L[1])<size(S.IBP);
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: getSortedIntegrals(setIBP I)</summary>
 
@@ -962,11 +1034,13 @@ list L=getSortedIntegrals(S); //L list of pair of sorted integrals and the corre
 L[1];
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: computeManyIBP(def G0,list setNu)</summary>
 
-**USAGE**   :  computeManyIBP(G0,setNu); G0 graph@*,
+**USAGE**   :  computeManyIBP(G0,setNu); G0 graph,
 
 **ASSUME**  :   setNu is a list of seeds correspond to the graph G0 which are belong to the 
                 same sector 
@@ -996,11 +1070,13 @@ setIBP S=computeManyIBP(G,list(list(1,1,0,1,0,1,0,-1,0),list(1,1,0,1,0,1,0,-3,0)
 size(S.IBP); 
 ```
 </details>
+```
 
+```@raw html
 <details>
 <summary>procedure: getReducedIBPSystem(graph G,list targetInt )</summary>
 
-**USAGE**   :  getReducedIBPSystem(G,targetInt); targetInt list,G graph@*,
+**USAGE**   :  getReducedIBPSystem(G,targetInt); targetInt list,G graph,
 
 **ASSUME**  :   G is a graph and targetInt is a list of seeds of target integrals.
 
@@ -1025,3 +1101,4 @@ I;
 size(finalset[2]);
 ```
 </details>
+```
