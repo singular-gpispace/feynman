@@ -17,11 +17,6 @@ jobs:
       - uses: julia-actions/cache@v1
       - name: Install dependencies
         run: julia --color=yes --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
-      # Run Singular with the full path to run_Examples.sing
-      - name: Run Singular with full path
-        run: |
-          echo "Running Singular with path to docs/run_Examples.sing"
-          Singular $(pwd)/docs/run_Examples.sing 
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
