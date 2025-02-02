@@ -1,8 +1,10 @@
-@meta
+```@meta
 CurrentModule = Feynman
+```
 
 
-## Feynman.lib function description
+# FUNCTIONS
+
 
 <details>
 <summary>procedure: printMat(matrix M)</summary>
