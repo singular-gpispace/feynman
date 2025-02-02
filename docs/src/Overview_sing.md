@@ -1,3 +1,7 @@
+```@meta
+CurrentModule = Feynman
+```
+
 @doc raw"""
 proc printMat(matrix M)
 

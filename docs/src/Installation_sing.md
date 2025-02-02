@@ -1,3 +1,7 @@
+```@meta
+CurrentModule = Feynman
+```
+
 # Installation
 
 We assume that SINGULAR is installed in a recent stable version (4.1.1 Feb 2018  or 4.3.2.0 Jan_2022 ) .
