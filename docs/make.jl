@@ -30,10 +30,10 @@ makedocs(;
             "Overview.md",
         ],
         "Singular version of Feynman" => [
-            "Home" => [
-                "Installation_sing.md",
-                "Overview_sing.md",
-            ],
+            "Home" =>  "Installation_sing.md",
+            
+            "Overview" =>    "Overview_sing.md",
+            
             "Examples" =>  "Example_sing.md",
     
             "Functions" =>  "Functions_sing.md",

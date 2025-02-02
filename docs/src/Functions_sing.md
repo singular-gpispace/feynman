@@ -1,7 +1,7 @@
-```@meta
+@meta
 CurrentModule = Feynman
-```
-<p>
+
+
 ## Feynman.lib function description
 
 <details>
@@ -1023,4 +1023,3 @@ I;
 size(finalset[2]);
 ```
 </details>
-</p>
