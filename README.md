@@ -20,10 +20,10 @@
 The package Feynman generate the Feynman integrand associated to a Feynman diagram (graph) and compute an IBP system using the powerful module-intersection integration-by-parts (IBP) method, suitable for multi-loop and multi-scale Feynman integral reduction. It will provide( soon! ) an application programming interface(API) in OSCAR to use packages NeatIBP, pfd-parallel to make this computation much faster and to solve the reduction problem associated to Feynman integrals completely.The package Feynman is based on the computer algebra system OSCAR and is provided as a package for the Julia programming language.
 
 
-This package can generate the Feynman integrand associated to a Feynman graph $G$ if $\text{number of internal edges of} \leq \frac{1}{2}(l+1)+el$.
-Here $l$ is the loop number and $e=span<p_1,...,p_{n_{ext}}>$ is the number of linearly independent external momenta og $G$.
+This package can generate the Feynman integrand associated to a Feynman graph $G$ if $\text{number of internal edges} \leq \frac{1}{2}(l+1)+el$.
+Here $l$ is the loop number and $e=span<p_1,...,p_{n_{ext}}>$ is the number of linearly independent external momenta of $G$.
 
-In the case $\text{number of internal edges of} < \frac{1}{2}(l+1)+el$, the package generate the Feynman integrand associated to a larger Feynman graph $G'$ so that $G$ is a subgraph of  $G'$. User can set appropriately the denomiator powers to zero to obtained the Baikov representation of $G$.
+In the case $\text{number of internal edges} < \frac{1}{2}(l+1)+el$, the package generate the Feynman integrand associated to a larger Feynman graph $G'$ so that $G$ is a subgraph of  $G'$. User can set appropriately the denomiator powers to zero to obtain the Baikov representation of $G$.
 
 # Installation
 
