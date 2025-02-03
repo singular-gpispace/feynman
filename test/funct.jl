@@ -60,9 +60,4 @@
         @test_throws ErrorException removeVariable(R,[8])
     end
 
-
-
-
-
-
 end
