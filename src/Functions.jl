@@ -1001,13 +1001,13 @@ Assignment of Baikov variables (Z_i) are:
 
 G.baikovmatrix is the Gram matrix where entries are replaced with Baikov variables:
 ```math
-$\begin{bmatrix}
+\begin{bmatrix}
 0 & 1//2*t[1] & 1//2*t[2] & 1//2*z[2] - 1//2*z[3] & z[5]\\ 
 1//2*t[1] & 0 & -1//2*t[1] - 1//2*t[2] & 1//2*t[1] + 1//2*z[3] - 1//2*z[4] & 1//2*t[1] - z[5] + 1//2*z[6] - 1//2*z[7] \\ 
 1//2*t[2] & -1//2*t[1] - 1//2*t[2] & 0 & z[1] & -1//2*t[1] + 1//2*z[7] - 1//2*z[8]\\
 1//2*z[2] - 1//2*z[3] & 1//2*t[1] + 1//2*z[3] - 1//2*z[4] & z[1] & z[2] & 1//2*z[2] + 1//2*z[6] - 1//2*z[9]\\
 z[5] & 1//2*t[1] - z[5] + 1//2*z[6] - 1//2*z[7] & -1//2*t[1] + 1//2*z[7] - 1//2*z[8] & 1//2*z[2] + 1//2*z[6] - 1//2*z[9] & z[6]\\
-\end{bmatrix}$
+\end{bmatrix}
 ````
 """
 function computeBaikovMatrix(G::simple_graph)
@@ -1348,6 +1348,8 @@ end
 
 
 @doc raw"""
+computeIBP(G::simple_graph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool)
+computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool)
 computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int)
 
 **USAGE**   :  computeIBP(G,ν,d); 
@@ -1355,6 +1357,30 @@ computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int)
 **ASSUME**  : G is a labeled graph, d is a positive integer and ν is vector of integers correspond to the parent diagram of the integral.
 
 **RETURN**  : A set of simplified IBP identities without double propagators (without performing trimming) . 
+
+**Examples**
+```julia
+julia> G=simple_graph([1,2,3,4],[(1,4),(1,2),(2,3),(3,4),1,2,3,4]);
+julia> set_IBP=computeIBP(G,[1,1,1,0],8,true);
+labels used for Gram matrix of external loop momenta:
+["p[1]*p[2] => 1//2*t[1]"]
+["p[1]*p[3] => 1//2*t[2]"]
+["p[2]*p[3] => -1//2*t[1] - 1//2*t[2]"]
+Assignment of Baikov variables (Z_i) are:
+["z[1] => q[1]^2"]
+["z[2] => 2*p[1]*q[1] + q[1]^2"]
+["z[3] => 2*p[1]*p[2] + 2*p[1]*q[1] + 2*p[2]*q[1] + q[1]^2"]
+["z[4] => 2*p[1]*q[1] + 2*p[2]*q[1] + 2*p[3]*q[1] + q[1]^2"]
+
+julia> printIBP(set_IBP.setIBP,3);
+First 3 IBP identities associated to G  (Total number of relations=22):
+0=(-t[1]^2 - t[1]*t[2] + t[1] + t[2] - D + 6)I(0,-1,-1,0)+(t[1]^2 + t[1]*t[2] + 2)I(0,-1,-2,1)+(t[1]^2 + t[1]*t[2] + 2*t[1] + 2*t[2] + 2)I(0,-2,-1,1)+(t[1]^2 + t[1]*t[2] + D - 6)I(-1,-1,-1,0)+(-2*t[1]^2 - 2*t[1])I(-2,-1,-1,1)+(-t[1]*D + 5*t[1] - t[2]*D + 7*t[2])I(0,-1,-1,1)+(-t[1]*D + 10*t[1] - 8)I(-1,0,-1,1)+(t[1]*D - 6*t[1] + t[2]*D - 6*t[2])I(-1,-1,0,1)+(t[1]*D - 7*t[1] + 8)I(-1,-1,-1,1)+(t[1] + t[2])I(1,-1,-1,0)+(-t[1] - t[2])I(1,-1,-2,1)+(-t[1] - t[2])I(1,-2,-1,1)+(-t[1] + D - 6)I(0,0,-1,0)+(t[1] - 2)I(0,0,-2,1)+(t[1] - t[2] + D - 7)I(0,-1,0,0)+(t[1])I(0,-1,-2,2)+(t[1] + 1)I(0,-1,-2,0)+(-t[1] + t[2] - 1)I(0,-2,0,1)+(t[1] + t[2] - 1)I(0,-2,0,0)+(t[1])I(0,-2,-1,2)+(t[1] - D + 7)I(-1,0,-1,0)+(-2*t[1] + 4)I(-1,0,-2,2)+(-3*t[1] - t[2] - D + 5)I(-1,-1,0,0)+(2*t[1] - 4)I(-1,-1,-2,2)+(-2*t[1])I(-1,-1,-2,1)+(-t[1])I(-1,-1,-2,0)+(2*t[1] + 1)I(-1,-2,0,1)+(-t[1] - t[2])I(-1,-2,0,0)+(2*t[1] + 2*t[2] - 4)I(-1,-2,-1,2)+(-4*t[1] - 4*t[2])I(-1,-2,-1,1)+(-2*t[1] + 4)I(-2,0,-1,2)+(2*t[1])I(-2,0,-1,1)+(t[1])I(-2,0,-1,0)+(2*t[1] + 1)I(-2,-1,0,1)+(-t[1])I(-2,-1,0,0)+(-D + 8)I(0,0,0,0)+(D - 7)I(-1,0,0,0)+(-1)I(1,-1,-2,0)+(1)I(1,-2,0,0)+(-1)I(1,-2,-1,0)+(-1)I(0,-2,1,0)+(1)I(0,-2,-1,0)+(6)I(-1,0,-1,2)+(-2)I(-1,0,-2,3)+(-6)I(-1,-1,-1,2)+(2)I(-1,-1,-2,3)+(1)I(-1,-2,1,0)+(2)I(-1,-2,-1,3)+(-1)I(-2,0,0,1)+(-1)I(-2,0,0,0)+(-2)I(-2,0,-1,3)+(1)I(-2,-1,1,0)+(2)I(-2,-1,-1,3)+(-4)I(-2,-1,-1,2)
+
+0=(-t[1] - 1)I(0,-1,-2,0)+(t[1])I(-1,-1,-2,0)+(t[1] + 1)I(-2,-1,0,0)+(-t[1])I(-2,-1,-1,0)+(1)I(1,-1,-2,0)+(-1)I(1,-2,0,0)+(1)I(1,-2,-1,0)+(-1)I(0,-1,-1,0)+(1)I(0,-2,1,0)+(-1)I(0,-2,-1,0)+(1)I(-1,-1,0,0)+(-1)I(-1,-2,1,0)+(1)I(-1,-2,0,0)+(-1)I(-2,-1,1,0)
+
+0=(-t[1] - t[2])I(0,-2,-1,0)+(t[1] + t[2])I(-1,-2,-1,0)+(-t[1])I(-2,0,-1,0)+(t[1])I(-2,-1,-1,0)+(-1)I(0,0,-1,0)+(1)I(0,0,-2,1)+(1)I(0,-1,-1,0)+(-1)I(0,-1,-2,1)+(1)I(0,-2,0,0)+(-1)I(0,-2,-1,1)+(1)I(-1,0,-1,0)+(-1)I(-1,0,-2,1)+(-1)I(-1,-1,-1,0)+(1)I(-1,-1,-2,1)+(-1)I(-1,-2,0,0)+(1)I(-1,-2,-1,1)+(1)I(-2,0,0,0)+(-1)I(-2,0,-1,1)+(-1)I(-2,-1,0,0)+(1)I(-2,-1,-1,1)
+
+```
 """
 function computeIBP(G::simple_graph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool)
     G=Feynman.labelGraph(G,0);
@@ -1490,7 +1516,7 @@ function computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool
             end
     
         else
-                push!(v,T(0));
+                push!(v,T(1));
         end          
     end 
     push!(gens_M2,Singular.vector(T,v...));
@@ -1550,17 +1576,20 @@ function computeIBP(G::labeledgraph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool
 
     end
 
-#=------------------test again for correct calculation
+#------------------test again for correct calculation
     for i in 1:length(vecG) 
         w=vecG[i]
         g=RZ(0);
         for i in 1:length(w)-1 
             g=g+w[i]*derivative(f,length(var_t)+1+i);
         end
-        println(g-w[length(w)]*f)
-
+        
+        if g-w[length(w)]*f!=0
+            println("Something wrong in generating module intersection");
+        end
+        
     end  
-=#
+
 ##---------------Computation of IBP identities------------------------------------------------
     set_IBP=[];
     for i in 1:length(vecG) 
@@ -1647,6 +1676,30 @@ printIBP(set_IBP::Vector{Vector{}},n::Int64)
 **ASSUME**  : set_IBP is the output of computeIBP
 
 **RETURN**  : It prints first n IBP relations 
+
+**Examples**
+```julia
+julia> G=simple_graph([1,2,3,4],[(1,4),(1,2),(2,3),(3,4),1,2,3,4]);
+julia> set_IBP=computeIBP(G,[1,1,1,0],8,true);
+labels used for Gram matrix of external loop momenta:
+["p[1]*p[2] => 1//2*t[1]"]
+["p[1]*p[3] => 1//2*t[2]"]
+["p[2]*p[3] => -1//2*t[1] - 1//2*t[2]"]
+Assignment of Baikov variables (Z_i) are:
+["z[1] => q[1]^2"]
+["z[2] => 2*p[1]*q[1] + q[1]^2"]
+["z[3] => 2*p[1]*p[2] + 2*p[1]*q[1] + 2*p[2]*q[1] + q[1]^2"]
+["z[4] => 2*p[1]*q[1] + 2*p[2]*q[1] + 2*p[3]*q[1] + q[1]^2"]
+
+julia> printIBP(set_IBP.setIBP,3);
+First 3 IBP identities associated to G  (Total number of relations=22):
+0=(-t[1]^2 - t[1]*t[2] + t[1] + t[2] - D + 6)I(0,-1,-1,0)+(t[1]^2 + t[1]*t[2] + 2)I(0,-1,-2,1)+(t[1]^2 + t[1]*t[2] + 2*t[1] + 2*t[2] + 2)I(0,-2,-1,1)+(t[1]^2 + t[1]*t[2] + D - 6)I(-1,-1,-1,0)+(-2*t[1]^2 - 2*t[1])I(-2,-1,-1,1)+(-t[1]*D + 5*t[1] - t[2]*D + 7*t[2])I(0,-1,-1,1)+(-t[1]*D + 10*t[1] - 8)I(-1,0,-1,1)+(t[1]*D - 6*t[1] + t[2]*D - 6*t[2])I(-1,-1,0,1)+(t[1]*D - 7*t[1] + 8)I(-1,-1,-1,1)+(t[1] + t[2])I(1,-1,-1,0)+(-t[1] - t[2])I(1,-1,-2,1)+(-t[1] - t[2])I(1,-2,-1,1)+(-t[1] + D - 6)I(0,0,-1,0)+(t[1] - 2)I(0,0,-2,1)+(t[1] - t[2] + D - 7)I(0,-1,0,0)+(t[1])I(0,-1,-2,2)+(t[1] + 1)I(0,-1,-2,0)+(-t[1] + t[2] - 1)I(0,-2,0,1)+(t[1] + t[2] - 1)I(0,-2,0,0)+(t[1])I(0,-2,-1,2)+(t[1] - D + 7)I(-1,0,-1,0)+(-2*t[1] + 4)I(-1,0,-2,2)+(-3*t[1] - t[2] - D + 5)I(-1,-1,0,0)+(2*t[1] - 4)I(-1,-1,-2,2)+(-2*t[1])I(-1,-1,-2,1)+(-t[1])I(-1,-1,-2,0)+(2*t[1] + 1)I(-1,-2,0,1)+(-t[1] - t[2])I(-1,-2,0,0)+(2*t[1] + 2*t[2] - 4)I(-1,-2,-1,2)+(-4*t[1] - 4*t[2])I(-1,-2,-1,1)+(-2*t[1] + 4)I(-2,0,-1,2)+(2*t[1])I(-2,0,-1,1)+(t[1])I(-2,0,-1,0)+(2*t[1] + 1)I(-2,-1,0,1)+(-t[1])I(-2,-1,0,0)+(-D + 8)I(0,0,0,0)+(D - 7)I(-1,0,0,0)+(-1)I(1,-1,-2,0)+(1)I(1,-2,0,0)+(-1)I(1,-2,-1,0)+(-1)I(0,-2,1,0)+(1)I(0,-2,-1,0)+(6)I(-1,0,-1,2)+(-2)I(-1,0,-2,3)+(-6)I(-1,-1,-1,2)+(2)I(-1,-1,-2,3)+(1)I(-1,-2,1,0)+(2)I(-1,-2,-1,3)+(-1)I(-2,0,0,1)+(-1)I(-2,0,0,0)+(-2)I(-2,0,-1,3)+(1)I(-2,-1,1,0)+(2)I(-2,-1,-1,3)+(-4)I(-2,-1,-1,2)
+
+0=(-t[1] - 1)I(0,-1,-2,0)+(t[1])I(-1,-1,-2,0)+(t[1] + 1)I(-2,-1,0,0)+(-t[1])I(-2,-1,-1,0)+(1)I(1,-1,-2,0)+(-1)I(1,-2,0,0)+(1)I(1,-2,-1,0)+(-1)I(0,-1,-1,0)+(1)I(0,-2,1,0)+(-1)I(0,-2,-1,0)+(1)I(-1,-1,0,0)+(-1)I(-1,-2,1,0)+(1)I(-1,-2,0,0)+(-1)I(-2,-1,1,0)
+
+0=(-t[1] - t[2])I(0,-2,-1,0)+(t[1] + t[2])I(-1,-2,-1,0)+(-t[1])I(-2,0,-1,0)+(t[1])I(-2,-1,-1,0)+(-1)I(0,0,-1,0)+(1)I(0,0,-2,1)+(1)I(0,-1,-1,0)+(-1)I(0,-1,-2,1)+(1)I(0,-2,0,0)+(-1)I(0,-2,-1,1)+(1)I(-1,0,-1,0)+(-1)I(-1,0,-2,1)+(-1)I(-1,-1,-1,0)+(1)I(-1,-1,-2,1)+(-1)I(-1,-2,0,0)+(1)I(-1,-2,-1,1)+(1)I(-2,0,0,0)+(-1)I(-2,0,-1,1)+(-1)I(-2,-1,0,0)+(1)I(-2,-1,-1,1)
+
+```
 """
 function printIBP(set_IBP::Vector,n::Int64)
     
@@ -1668,6 +1721,38 @@ function printIBP(set_IBP::Vector,n::Int64)
     end
 end
 
+
+@doc raw"""
+computeM1(G::labeledgraph)
+
+**USAGE**   :  computeM1(G); 
+
+**ASSUME**  : G is the output of computeBaikovMatrix. 
+
+**RETURN**  : It computes the module M1 associated to graph $G$ which uses in the powerful module intersection method
+
+**Examples**
+```julia
+julia> G=simple_graph([1,2,3,4],[(1,4),(1,2),(2,3),(3,4),1,2,3,4]);
+julia> G=computeBaikovMatrix(G);
+labels used for Gram matrix of external loop momenta:
+["p[1]*p[2] => 1//2*t[1]"]
+["p[1]*p[3] => 1//2*t[2]"]
+["p[2]*p[3] => -1//2*t[1] - 1//2*t[2]"]
+Assignment of Baikov variables (Z_i) are:
+["z[1] => q[1]^2"]
+["z[2] => 2*p[1]*q[1] + q[1]^2"]
+["z[3] => 2*p[1]*p[2] + 2*p[1]*q[1] + 2*p[2]*q[1] + q[1]^2"]
+["z[4] => 2*p[1]*q[1] + 2*p[2]*q[1] + 2*p[3]*q[1] + q[1]^2"]
+
+julia> computeM1(G)
+4-element Vector{Any}:
+ QQMPolyRingElem[-z[1] + z[2], -z[1] + z[2], t[1] - z[1] + z[2], t[1] + t[2] - z[1] + z[2], 0]
+ QQMPolyRingElem[-t[1] - z[2] + z[3], -z[2] + z[3], -z[2] + z[3], -t[1] - t[2] - z[2] + z[3], 0]
+ QQMPolyRingElem[t[1] - z[3] + z[4], t[1] + t[2] - z[3] + z[4], -z[3] + z[4], -z[3] + z[4], 0]
+ QQMPolyRingElem[2*z[1], z[1] + z[2], -t[1] + z[1] + z[3], z[1] + z[4], -2]
+```
+"""
 function computeM1(G::labeledgraph)
     RZ=G.baikovover;
     R=G.over;
