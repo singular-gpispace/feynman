@@ -1000,15 +1000,15 @@ Assignment of Baikov variables (Z_i) are:
 ``` 
 
 G.baikovmatrix is the Gram matrix where entries are replaced with Baikov variables:
-```math
-\begin{bmatrix}
+
+$$\begin{bmatrix}
 0 & 1//2*t[1] & 1//2*t[2] & 1//2*z[2] - 1//2*z[3] & z[5]\\ 
 1//2*t[1] & 0 & -1//2*t[1] - 1//2*t[2] & 1//2*t[1] + 1//2*z[3] - 1//2*z[4] & 1//2*t[1] - z[5] + 1//2*z[6] - 1//2*z[7] \\ 
 1//2*t[2] & -1//2*t[1] - 1//2*t[2] & 0 & z[1] & -1//2*t[1] + 1//2*z[7] - 1//2*z[8]\\
 1//2*z[2] - 1//2*z[3] & 1//2*t[1] + 1//2*z[3] - 1//2*z[4] & z[1] & z[2] & 1//2*z[2] + 1//2*z[6] - 1//2*z[9]\\
 z[5] & 1//2*t[1] - z[5] + 1//2*z[6] - 1//2*z[7] & -1//2*t[1] + 1//2*z[7] - 1//2*z[8] & 1//2*z[2] + 1//2*z[6] - 1//2*z[9] & z[6]\\
-\end{bmatrix}
-````
+\end{bmatrix}$$
+
 """
 function computeBaikovMatrix(G::simple_graph)
     G=labelGraph(G,0);
