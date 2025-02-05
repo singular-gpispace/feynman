@@ -1,34 +1,33 @@
 using Oscar
 #include("DataTypes.jl")
 
-export greet
+
 export printNet
 export printGraph
-export printLabeledGraph
 export labelGraph
+export printLabeledGraph
 export balancingIdeal
-export substituteGraph
 export eliminateVariables
 export removeVariable
 export removeParameter
+export removeVariableLocal
+export substituteGraph
+export removeElimVars
 export feynmanDenominators
 export propagators
 export ISP
-export removeElimVars
 export computeBaikovMatrix
-export makePoly
-export removeVariableLocal
+export computeM1
 export computeIBP
 export printIBP
-export computeM1
-#------------------------------
-
+export makePoly
 #----------------------------------
 export sample1
 export Net
 export simple_graph
 export labeledgraph
 export IBP
+
 mutable struct sample1
     a::Int
 end
@@ -40,8 +39,6 @@ end
 mutable struct Net
     rows :: Vector
 end
-
-
 
 mutable struct labeledgraph
     vertices :: Vector{Int64}
@@ -63,22 +60,34 @@ end
 
 #----------------------------------
 
-
-
-
-
-
-function greet()
-    return "Hello"
-end
-
-
-
 function printNet(N::Vector)
     println('[',join(repr.(N),", "),']');
 end
 
 ## This is the print function to print a simple graph
+
+```
+"Setting a Feynman Graph"
+
+```
+
+@doc raw"""
+printGraph(G::simple_graph)
+
+**USAGE**   : prinGraph(G);
+
+**ASSUME**  : G is a lsimple graph.
+
+**Theory**: This is the print function used in julia to print a lsimple graph.
+
+**#Examples**
+```julia
+julia> G=Feynman.simple_graph([1,2,3,4],[(1,4),(1,2),(2,3),(3,4),1,2,3,4]);
+
+julia> printGraph(G);
+Graph with 4 vertices and 4 bounded edges 4 unbounded edges
+```
+"""
 function printGraph(G::simple_graph)
     num_ver=length(G.vertices);
     num_edg=length(G.edges);
@@ -206,6 +215,10 @@ function labelGraph(G::simple_graph,ch::Int)
     return lG
 end
 
+
+```
+"Computation of Baikov Matrix"
+```
 
 @doc raw"""
 balancingIdeal(G::labeledgraph)
@@ -1346,6 +1359,10 @@ function makePoly(n::Int,m::Int)
     return Z;
 end
 
+
+```
+"Computation of set of integration-by-part(IBP) relations"
+```
 
 @doc raw"""
 computeIBP(G::simple_graph,Nu::Vector{Int64},cutDeg::Int,showGens::Bool)
