@@ -17,7 +17,7 @@
 
 # Feynman
 
-The package Feynman generate the Feynman integrand associated to a Feynman diagram (graph) and compute an IBP system using the powerful module-intersection integration-by-parts (IBP) method, suitable for multi-loop and multi-scale Feynman integral reduction. It will provide( soon! ) an application programming interface(API) in OSCAR to use packages NeatIBP, pfd-parallel to make this computation much faster and to solve the reduction problem associated to Feynman integrals completely.The package Feynman is based on the computer algebra system OSCAR and is provided as a package for the Julia programming language.
+The package Feynman generate the Feynman integrand associated to a Feynman diagram (graph) and compute an IBP system using the module-intersection integration-by-parts (IBP) method, suitable for multi-loop and multi-scale Feynman integral reduction. In the future, it might provide an interface to utilize the packages NeatIBP, pfd-parallel and further software for improved performance, and to solve, in addition to the internal functionality, the row reduction problem. The package Feynman is based on the computer algebra system OSCAR and is provided as a package for the Julia programming language.
 
 This package can generate the Feynman integrand associated to a Feynman graph $G$ if $\text{number of internal edges} < \frac{1}{2}l(l+1)+el$.
 Here $l$ is the loop number and $e=span<p_1,...,p_{n_{ext}}>$ is the number of linearly independent external momenta of $G$. In the generic case (That we considered in this package), $e=p_{n_{ext}}-1$.
